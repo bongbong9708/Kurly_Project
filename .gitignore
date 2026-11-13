@@ -1,0 +1,11 @@
+# 과제 원문 — 유출 금지
+과제내용/
+
+# macOS
+.DS_Store
+
+# Xcode
+xcuserdata/
+DerivedData/
+build/
+*.xcuserstate
