@@ -24,8 +24,13 @@ struct GitHubSearchAPIClient {
         let response: URLResponse
         do {
             (data, response) = try await client.data(for: request)
+        } catch is CancellationError {
+            throw SearchError.cancelled
+        } catch let error as URLError where error.code == .cancelled {
+            // URLSession은 Task 취소를 URLError(.cancelled)로 바꿔서 던진다
+            throw SearchError.cancelled
         } catch {
-            // 연결 자체가 안 된 경우. 그 외 URLError는 원인을 구분할 수단이 없어 같이 묶는다
+            // 연결 실패와 타임아웃. 사용자가 할 수 있는 대응이 같아 하나로 묶는다
             throw SearchError.network
         }
 

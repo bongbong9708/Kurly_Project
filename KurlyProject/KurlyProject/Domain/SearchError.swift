@@ -21,4 +21,10 @@ enum SearchError: Error, Equatable {
 
     /// 위 셋에 해당하지 않는 응답. 어떤 코드였는지는 디버깅을 위해 남긴다
     case unexpectedStatus(Int)
+
+    /// 요청이 취소됨.
+    ///
+    /// 실패가 아니라 정상 흐름이다. 새 검색어를 입력해 이전 요청을 취소했을 때 발생한다.
+    /// 화면은 이 case에서 아무것도 하지 않아야 한다. 에러로 표시하면 타이핑할 때마다 에러가 뜬다.
+    case cancelled
 }

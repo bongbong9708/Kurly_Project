@@ -117,6 +117,27 @@ final class GitHubSearchAPIClientTests: XCTestCase {
         await assertThrows(.decoding) { try await sut.search(keyword: "swift", page: 1) }
     }
 
+    func test_URLSession이_취소를_알리면_cancelled_에러() async {
+        let (sut, _) = makeClient(.failure(URLError(.cancelled)))
+
+        await assertThrows(.cancelled) { try await sut.search(keyword: "swift", page: 1) }
+    }
+
+    func test_Task가_취소되면_cancelled_에러() async {
+        let (sut, _) = makeClient(.failure(CancellationError()))
+
+        await assertThrows(.cancelled) { try await sut.search(keyword: "swift", page: 1) }
+    }
+
+    func test_취소는_network_에러와_구분된다() async {
+        // 새 검색어 입력으로 이전 요청을 취소했을 때 네트워크 에러로 보이면 안 된다
+        let (cancelledSUT, _) = makeClient(.failure(URLError(.cancelled)))
+        let (offlineSUT, _) = makeClient(.failure(URLError(.notConnectedToInternet)))
+
+        await assertThrows(.cancelled) { try await cancelledSUT.search(keyword: "swift", page: 1) }
+        await assertThrows(.network) { try await offlineSUT.search(keyword: "swift", page: 1) }
+    }
+
     func test_그_밖의_상태코드는_코드를_담아서_전달한다() async {
         let (sut, _) = makeClient(.success((Data(), httpResponse(422))))
 
