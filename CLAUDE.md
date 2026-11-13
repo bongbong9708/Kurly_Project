@@ -167,9 +167,13 @@ AI 활용 내용(프롬프트)은 제출물이다. 기능 하나가 끝날 때�
 
 ## 기술 스택
 
-<!-- TODO: 확정되면 채운다. 후보: SwiftUI, Swift Concurrency, MVVM + Clean Architecture, WKWebView, XCTest -->
-- 
-- 
+- UI: SwiftUI (iOS 17.0+)
+- 비동기: Swift Concurrency (async/await)
+- 아키텍처: Clean Architecture (Presentation / Domain / Data)
+- WebView: `WKWebView` + `UIViewRepresentable`
+- 테스트: XCTest
+- 저장: <!-- TODO: UserDefaults vs SwiftData 미정 -->
+- 외부 라이브러리: 없음
 
 ## 확정된 결정 (재론 금지)
 
@@ -181,6 +185,8 @@ AI 활용 내용(프롬프트)은 제출물이다. 기능 하나가 끝날 때�
 - 최소 지원 iOS 17.0 (참고: 2026-11-13 App Store 기준 컬리·카카오톡 앱 모두 iOS 17.0 이상) — 이유: <!-- TODO: 직접 작성 -->
   - 결과: `@Observable` 사용 가능, SwiftUI 네이티브 `WebView`(iOS 26+)는 사용 불가 → `WKWebView`를 `UIViewRepresentable`로 감싼다
 - 같은 검색어 재검색 시 새로 저장하지 않고 기존 항목의 날짜를 갱신한다 (중복 제거) — 이유: <!-- TODO: 직접 작성 -->
+- 테스트는 XCTest를 쓴다 (Swift Testing 아님) — 이유: <!-- TODO: 직접 작성 -->
+- Swift 언어 모드는 5로 둔다 (Swift 6 strict concurrency 미적용) — 이유: <!-- TODO: 직접 작성 -->
 - 
 
 ## 폴더 구조
@@ -211,8 +217,10 @@ docs/
 
 ```bash
 # 빌드
+xcodebuild -project KurlyProject/KurlyProject.xcodeproj -scheme KurlyProject -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.6' build
+
 # 테스트
-# 린트
+xcodebuild -project KurlyProject/KurlyProject.xcodeproj -scheme KurlyProject -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.6' test
 ```
 
 ## 알려진 함정

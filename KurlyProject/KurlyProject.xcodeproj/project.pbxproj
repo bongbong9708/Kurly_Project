@@ -1,0 +1,554 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 110;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		88A8FEA430A720F80086FC31 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 88A8FE8E30A720F70086FC31 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 88A8FE9530A720F70086FC31;
+			remoteInfo = KurlyProject;
+		};
+		88A8FEAE30A720F80086FC31 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 88A8FE8E30A720F70086FC31 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 88A8FE9530A720F70086FC31;
+			remoteInfo = KurlyProject;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		88A8FE9630A720F70086FC31 /* KurlyProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KurlyProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		88A8FEA330A720F80086FC31 /* KurlyProjectTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KurlyProjectTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		88A8FEAD30A720F80086FC31 /* KurlyProjectUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KurlyProjectUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		88A8FE9830A720F70086FC31 /* KurlyProject */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = KurlyProject;
+			sourceTree = "<group>";
+		};
+		88A8FEA630A720F80086FC31 /* KurlyProjectTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = KurlyProjectTests;
+			sourceTree = "<group>";
+		};
+		88A8FEB030A720F80086FC31 /* KurlyProjectUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = KurlyProjectUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		88A8FE9330A720F70086FC31 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		88A8FEA030A720F80086FC31 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		88A8FEAA30A720F80086FC31 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		88A8FE8D30A720F70086FC31 = {
+			isa = PBXGroup;
+			children = (
+				88A8FE9830A720F70086FC31 /* KurlyProject */,
+				88A8FEA630A720F80086FC31 /* KurlyProjectTests */,
+				88A8FEB030A720F80086FC31 /* KurlyProjectUITests */,
+				88A8FE9730A720F70086FC31 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		88A8FE9730A720F70086FC31 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				88A8FE9630A720F70086FC31 /* KurlyProject.app */,
+				88A8FEA330A720F80086FC31 /* KurlyProjectTests.xctest */,
+				88A8FEAD30A720F80086FC31 /* KurlyProjectUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		88A8FE9530A720F70086FC31 /* KurlyProject */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 88A8FEB530A720F80086FC31 /* Build configuration list for PBXNativeTarget "KurlyProject" */;
+			buildPhases = (
+				88A8FE9230A720F70086FC31 /* Sources */,
+				88A8FE9330A720F70086FC31 /* Frameworks */,
+				88A8FE9430A720F70086FC31 /* Resources */,
+			);
+			buildRules = (
+			);
+			fileSystemSynchronizedGroups = (
+				88A8FE9830A720F70086FC31 /* KurlyProject */,
+			);
+			name = KurlyProject;
+			productName = KurlyProject;
+			productReference = 88A8FE9630A720F70086FC31 /* KurlyProject.app */;
+			productType = "com.apple.product-type.application";
+		};
+		88A8FEA230A720F80086FC31 /* KurlyProjectTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 88A8FEB830A720F80086FC31 /* Build configuration list for PBXNativeTarget "KurlyProjectTests" */;
+			buildPhases = (
+				88A8FE9F30A720F80086FC31 /* Sources */,
+				88A8FEA030A720F80086FC31 /* Frameworks */,
+				88A8FEA130A720F80086FC31 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				88A8FEA530A720F80086FC31 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				88A8FEA630A720F80086FC31 /* KurlyProjectTests */,
+			);
+			name = KurlyProjectTests;
+			productName = KurlyProjectTests;
+			productReference = 88A8FEA330A720F80086FC31 /* KurlyProjectTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		88A8FEAC30A720F80086FC31 /* KurlyProjectUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 88A8FEBB30A720F80086FC31 /* Build configuration list for PBXNativeTarget "KurlyProjectUITests" */;
+			buildPhases = (
+				88A8FEA930A720F80086FC31 /* Sources */,
+				88A8FEAA30A720F80086FC31 /* Frameworks */,
+				88A8FEAB30A720F80086FC31 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				88A8FEAF30A720F80086FC31 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				88A8FEB030A720F80086FC31 /* KurlyProjectUITests */,
+			);
+			name = KurlyProjectUITests;
+			productName = KurlyProjectUITests;
+			productReference = 88A8FEAD30A720F80086FC31 /* KurlyProjectUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		88A8FE8E30A720F70086FC31 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2710;
+				LastUpgradeCheck = 2710;
+				TargetAttributes = {
+					88A8FE9530A720F70086FC31 = {
+						CreatedOnToolsVersion = 27.1;
+					};
+					88A8FEA230A720F80086FC31 = {
+						CreatedOnToolsVersion = 27.1;
+						TestTargetID = 88A8FE9530A720F70086FC31;
+					};
+					88A8FEAC30A720F80086FC31 = {
+						CreatedOnToolsVersion = 27.1;
+						TestTargetID = 88A8FE9530A720F70086FC31;
+					};
+				};
+			};
+			buildConfigurationList = 88A8FE9130A720F70086FC31 /* Build configuration list for PBXProject "KurlyProject" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 88A8FE8D30A720F70086FC31;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 88A8FE9730A720F70086FC31 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				88A8FE9530A720F70086FC31 /* KurlyProject */,
+				88A8FEA230A720F80086FC31 /* KurlyProjectTests */,
+				88A8FEAC30A720F80086FC31 /* KurlyProjectUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		88A8FE9430A720F70086FC31 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		88A8FEA130A720F80086FC31 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		88A8FEAB30A720F80086FC31 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		88A8FE9230A720F70086FC31 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+		88A8FE9F30A720F80086FC31 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+		88A8FEA930A720F80086FC31 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		88A8FEA530A720F80086FC31 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 88A8FE9530A720F70086FC31 /* KurlyProject */;
+			targetProxy = 88A8FEA430A720F80086FC31 /* PBXContainerItemProxy */;
+		};
+		88A8FEAF30A720F80086FC31 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 88A8FE9530A720F70086FC31 /* KurlyProject */;
+			targetProxy = 88A8FEAE30A720F80086FC31 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		88A8FEB330A720F80086FC31 /* Debug configuration for PBXProject "KurlyProject" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = F9T64NW26M;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		88A8FEB430A720F80086FC31 /* Release configuration for PBXProject "KurlyProject" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = F9T64NW26M;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		88A8FEB630A720F80086FC31 /* Debug configuration for PBXNativeTarget "KurlyProject" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F9T64NW26M;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sangbong.KurlyProject;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		88A8FEB730A720F80086FC31 /* Release configuration for PBXNativeTarget "KurlyProject" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F9T64NW26M;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sangbong.KurlyProject;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		88A8FEB930A720F80086FC31 /* Debug configuration for PBXNativeTarget "KurlyProjectTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F9T64NW26M;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sangbong.KurlyProjectTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KurlyProject.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/KurlyProject";
+			};
+			name = Debug;
+		};
+		88A8FEBA30A720F80086FC31 /* Release configuration for PBXNativeTarget "KurlyProjectTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F9T64NW26M;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sangbong.KurlyProjectTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KurlyProject.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/KurlyProject";
+			};
+			name = Release;
+		};
+		88A8FEBC30A720F80086FC31 /* Debug configuration for PBXNativeTarget "KurlyProjectUITests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F9T64NW26M;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sangbong.KurlyProjectUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = KurlyProject;
+			};
+			name = Debug;
+		};
+		88A8FEBD30A720F80086FC31 /* Release configuration for PBXNativeTarget "KurlyProjectUITests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F9T64NW26M;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sangbong.KurlyProjectUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = KurlyProject;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		88A8FE9130A720F70086FC31 /* Build configuration list for PBXProject "KurlyProject" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				88A8FEB330A720F80086FC31 /* Debug configuration for PBXProject "KurlyProject" */,
+				88A8FEB430A720F80086FC31 /* Release configuration for PBXProject "KurlyProject" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		88A8FEB530A720F80086FC31 /* Build configuration list for PBXNativeTarget "KurlyProject" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				88A8FEB630A720F80086FC31 /* Debug configuration for PBXNativeTarget "KurlyProject" */,
+				88A8FEB730A720F80086FC31 /* Release configuration for PBXNativeTarget "KurlyProject" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		88A8FEB830A720F80086FC31 /* Build configuration list for PBXNativeTarget "KurlyProjectTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				88A8FEB930A720F80086FC31 /* Debug configuration for PBXNativeTarget "KurlyProjectTests" */,
+				88A8FEBA30A720F80086FC31 /* Release configuration for PBXNativeTarget "KurlyProjectTests" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		88A8FEBB30A720F80086FC31 /* Build configuration list for PBXNativeTarget "KurlyProjectUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				88A8FEBC30A720F80086FC31 /* Debug configuration for PBXNativeTarget "KurlyProjectUITests" */,
+				88A8FEBD30A720F80086FC31 /* Release configuration for PBXNativeTarget "KurlyProjectUITests" */,
+			);
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 88A8FE8E30A720F70086FC31 /* Project object */;
+	validationLevel = 1;
+}
