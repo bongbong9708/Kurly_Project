@@ -172,7 +172,7 @@ AI 활용 내용(프롬프트)은 제출물이다. 기능 하나가 끝날 때�
 - 아키텍처: Clean Architecture (Presentation / Domain / Data)
 - WebView: `WKWebView` + `UIViewRepresentable`
 - 테스트: XCTest
-- 저장: <!-- TODO: UserDefaults vs SwiftData 미정 -->
+- 저장: UserDefaults + Codable
 - 외부 라이브러리: 없음
 
 ## 확정된 결정 (재론 금지)
@@ -181,7 +181,7 @@ AI 활용 내용(프롬프트)은 제출물이다. 기능 하나가 끝날 때�
 - UI는 SwiftUI, 아키텍처는 Clean Architecture — 이유: <!-- TODO: 직접 작성 -->
 - 레이어: Presentation(View + ViewModel) → Domain(Entity, Repository 프로토콜, UseCase) ← Data(Repository 구현, API Client, DTO, 로컬 저장소)
 - UseCase는 도메인 로직이 있는 곳에만 둔다. 단순 위임이면 ViewModel이 Repository를 직접 호출 — 이유: <!-- TODO: 직접 작성 -->
-  - UseCase 후보: 최근 검색어 저장(중복·10개 제한·정렬), 자동완성 필터링, 페이지네이션(다음 페이지 판단·1,000개 상한)
+  - UseCase 후보: 최근 검색어 저장(중복·10개 제한·정렬), 자동완성 필터링, 페이지네이션(다음 페이지 판단)
 - 최소 지원 iOS 17.0 (참고: 2026-11-13 App Store 기준 컬리·카카오톡 앱 모두 iOS 17.0 이상) — 이유: <!-- TODO: 직접 작성 -->
   - 결과: `@Observable` 사용 가능, SwiftUI 네이티브 `WebView`(iOS 26+)는 사용 불가 → `WKWebView`를 `UIViewRepresentable`로 감싼다
 - 같은 검색어 재검색 시 새로 저장하지 않고 기존 항목의 날짜를 갱신한다 (중복 제거) — 이유: <!-- TODO: 직접 작성 -->
@@ -200,7 +200,6 @@ AI 활용 내용(프롬프트)은 제출물이다. 기능 하나가 끝날 때�
 
 ### 검색 결과
 - 총 개수는 API `total_count`를 그대로 표시한다 — 이유: <!-- TODO: 직접 작성 -->
-  - 결과: 표시 개수와 실제 스크롤 가능 개수(최대 1,000)가 다를 수 있다. 페이지네이션은 1,000개에서 멈춰야 한다
 - `per_page`는 API 기본값 30을 쓴다 (요청에 명시하지 않음) — 이유: <!-- TODO: 직접 작성 -->
 
 ### 입력 처리
@@ -208,6 +207,18 @@ AI 활용 내용(프롬프트)은 제출물이다. 기능 하나가 끝날 때�
   - 결과: 입력 중에는 네트워크 요청이 없다. debounce가 필요 없다
 - 최근 검색어는 검색을 실행한 순간에 저장한다 — 이유: <!-- TODO: 직접 작성 -->
 - 검색어 앞뒤 공백은 trim 후 저장·비교한다 — 이유: <!-- TODO: 직접 작성 -->
+
+### 이름 규칙
+- GitHub 저장소 Entity는 `GitHubRepository`로 쓴다 — 이유: <!-- TODO: 직접 작성 -->
+  - 데이터 접근 프로토콜(`...Repository`)과 구분하기 위해 접두사를 붙였다
+  - Entity 이름은 "어디에 담겼는지"가 아니라 "무엇인지"를 말한다
+- 데이터 접근 프로토콜은 `SearchResultRepository`, `RecentSearchRepository`
+- 응답 전체는 `SearchResult`(`totalCount` + `[GitHubRepository]`)
+
+### 저장소
+- 최근 검색어는 UserDefaults + Codable로 저장한다 — 이유: <!-- TODO: 직접 작성 -->
+  - Repository 프로토콜을 Domain에 두므로 저장 방식은 교체 가능하다
+  - 기본 요구사항과 추가 구현을 모두 끝내고 시간이 남으면 SwiftData 구현으로도 만들어본다 (선택)
 
 ### 에러 처리
 - 첫 검색 실패(보여줄 결과가 없음)는 별도 에러 화면으로 보여준다 — 이유: <!-- TODO: 직접 작성 -->
@@ -253,8 +264,6 @@ xcodebuild -project KurlyProject/KurlyProject.xcodeproj -scheme KurlyProject -de
 | 영역 | 함정 |
 |---|---|
 | GitHub Search API | 인증 없는 요청은 Rate limit이 매우 낮다(분당 10회 수준). 403/429 응답 처리 필요 |
-| GitHub Search API | 결과는 최대 1,000개까지만 제공. 그 이후 페이지는 422 에러 |
-| GitHub Search API | `total_count`가 실제 조회 가능한 개수보다 클 수 있다 → 마지막 페이지 판단 주의 |
 | 페이지네이션 | 로딩 중 중복 호출, 새 검색어 입력 시 이전 요청 결과가 섞이는 문제 |
 | 이미지 | `AsyncImage`는 캐시가 약해 스크롤 시 썸네일이 다시 로드될 수 있다 |
 
