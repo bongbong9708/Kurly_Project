@@ -1,0 +1,33 @@
+{
+  "total_count": 441722,
+  "incomplete_results": false,
+  "items": [
+    {
+      "id": 44838949,
+      "name": "swift",
+      "html_url": "https://github.com/swiftlang/swift",
+      "owner": {
+        "login": "swiftlang",
+        "avatar_url": "https://avatars.githubusercontent.com/u/42816656?v=4"
+      }
+    },
+    {
+      "id": 790019,
+      "name": "swift",
+      "html_url": "https://github.com/openstack/swift",
+      "owner": {
+        "login": "openstack",
+        "avatar_url": "https://avatars.githubusercontent.com/u/324574?v=4"
+      }
+    },
+    {
+      "id": 130902948,
+      "name": "swift",
+      "html_url": "https://github.com/tensorflow/swift",
+      "owner": {
+        "login": "tensorflow",
+        "avatar_url": "https://avatars.githubusercontent.com/u/15658638?v=4"
+      }
+    }
+  ]
+}

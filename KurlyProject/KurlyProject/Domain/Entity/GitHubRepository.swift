@@ -13,6 +13,6 @@ struct GitHubRepository: Identifiable, Equatable {
     let id: Int
     let name: String
     let ownerLogin: String
-    let ownerAvatarURL: URL?
+    let ownerAvatarURL: URL
     let htmlURL: URL
 }
