@@ -228,7 +228,21 @@ AI 활용 내용(프롬프트)은 제출물이다. 기능 하나가 끝날 때�
 ## 폴더 구조
 
 ```
-<!-- 트리를 붙여넣는다 -->
+KurlyProject/
+├── KurlyProject/
+│   ├── Domain/
+│   │   ├── Entity/        GitHubRepository, RecentSearch, SearchResult
+│   │   ├── Repository/    SearchResultRepository (프로토콜)
+│   │   └── SearchError.swift
+│   ├── Data/
+│   │   ├── DTO/           SearchResultDTO (+ toDomain)
+│   │   ├── Network/       HTTPClient, GitHubSearchAPIClient
+│   │   └── Repository/    DefaultSearchResultRepository
+│   ├── Presentation/      ContentView
+│   └── KurlyProjectApp.swift
+├── KurlyProjectTests/
+│   └── Resources/         search_repositories_swift.json (실제 응답 기반 픽스처)
+└── KurlyProjectUITests/
 
 docs/
 └── ai/
@@ -236,6 +250,8 @@ docs/
     ├── logs/         # 기능별 기록 (이슈 번호와 맞춤)
     └── raw/          # 원본 대화 export
 ```
+
+아직 없는 것: UseCase, ViewModel, 최근 검색어 저장소, 검색 화면 UI, WebView (Day 2~3)
 
 ## Git 규칙
 
@@ -258,6 +274,18 @@ xcodebuild -project KurlyProject/KurlyProject.xcodeproj -scheme KurlyProject -de
 # 테스트
 xcodebuild -project KurlyProject/KurlyProject.xcodeproj -scheme KurlyProject -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.6' test
 ```
+
+## 보류 항목 (잊지 말 것)
+
+<!-- 이슈로 만들지 않고 미룬 것. 처리하면 지운다. -->
+| 항목 | 내용 | 처리 예정 |
+|---|---|---|
+| `+` 인코딩 | `URLQueryItem`이 쿼리의 `+`를 인코딩하지 않아 `c++` 검색이 `c  `로 나갈 수 있다 | #2 |
+| 403/429 구분 | 403이 Rate limit 전용이 아니다. `x-ratelimit-remaining` 헤더로 정확히 판별 가능 | 미정 |
+| 한글 테스트명 | 통일 여부. 테스트가 적을 때 바꾸는 편이 싸다 | 미정 |
+| 템플릿 잔여물 | `KurlyProjectTests.swift`의 빈 테스트 2개, `ContentView`의 "Hello, world!" | #2 |
+| UI 테스트 타깃 | 시뮬레이터 실행 거부로 `-only-testing:KurlyProjectTests`로만 돌리는 중. 원인 미확인 | 미정 |
+| 실제 네트워크 호출 | API Client를 실제 서버로 호출해본 적 없다. 테스트는 전부 Mock | #2 |
 
 ## 알려진 함정
 

@@ -19,6 +19,12 @@ Domain이 DTO와 HTTP를 모르도록 Repository 경계를 만든다.
 
 > cancelled 처리를 지금하자 나머지는 추후 수정해도 될거같아
 
+> 머지해줘
+
+> Day2는 지금 안하고 내일할거야
+> 이번 세션은 이제 마무리 할거야
+> ai 로그 정리 등 마무리할거해줘
+
 ## AI 응답 요약
 
 - `ContentView.swift`를 `Presentation/`으로 `git mv`
@@ -60,4 +66,13 @@ Domain이 DTO와 HTTP를 모르도록 Repository 경계를 만든다.
 
 ## 결과
 
-- 커밋:
+- 커밋: `d3f736e` API Client, `0af6e8c` Repository, `2fbe4c7` 취소 처리
+- PR: #18 (머지 완료, Issue #1 닫힘)
+
+## 다음으로 미룬 것
+
+| 항목 | 내용 | 처리 예정 |
+|---|---|---|
+| `+` 인코딩 | `URLQueryItem`이 쿼리의 `+`를 인코딩하지 않아 `c++` 검색이 `c  `로 나갈 수 있음 | Issue #2 |
+| 403/429 구분 | 403이 Rate limit 전용이 아님. `x-ratelimit-remaining` 헤더로 정확히 판별 가능 | 미정 |
+| 한글 테스트명 | 통일 여부. 테스트가 적을 때 바꾸는 편이 쌈 | 미정 |

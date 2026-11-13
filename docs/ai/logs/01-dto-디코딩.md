@@ -1,4 +1,4 @@
-# 01. DTO와 디코딩 (Issue #1, PR -)
+# 01. DTO와 디코딩 (Issue #1, PR #18)
 
 ## 목표
 
@@ -50,4 +50,5 @@ GitHub Search API 응답을 받는 DTO를 정의하고, Domain Entity로 변환�
 
 ## 결과
 
-- 커밋:
+- 커밋: `d3f736e`
+- PR: #18 (머지 완료, Issue #1 닫힘)
