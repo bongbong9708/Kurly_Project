@@ -31,15 +31,31 @@ final class SearchViewModel {
     /// 테스트가 검색이 끝날 때까지 기다릴 수 있도록 읽기는 열어 둔다.
     private(set) var searchTask: Task<Void, Never>?
 
-    private let repository: SearchResultRepository
+    private(set) var recentSearches: [RecentSearch]
 
-    init(repository: SearchResultRepository) {
+    private let repository: SearchResultRepository
+    private let recentSearchUseCase: RecentSearchUseCase
+
+    init(repository: SearchResultRepository, recentSearchUseCase: RecentSearchUseCase) {
         self.repository = repository
+        self.recentSearchUseCase = recentSearchUseCase
+        self.recentSearches = recentSearchUseCase.fetch()
     }
+
+    /// iOS 18 이하에서 해제 시 크래시를 막기 위해 deinit을 메인 액터 밖에서 실행한다.
+    ///
+    /// 빌드 설정(기본 액터 격리 MainActor + Approachable Concurrency)에서는 deinit이 메인 액터로
+    /// 옮겨져 실행되는데, 이를 구버전 OS에서 돌리는 호환 코드(BackDeploy)가 iOS 18.6 시뮬레이터에서
+    /// SIGABRT로 죽었다 (iOS 27.1에서는 정상). deinit에서 하는 일이 없으므로 격리가 필요 없다.
+    nonisolated deinit {}
 
     func search() {
         let keyword = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !keyword.isEmpty else { return }
+
+        // 검색 결과와 상관없이 검색을 실행한 순간 저장한다
+        recentSearchUseCase.save(keyword: keyword)
+        recentSearches = recentSearchUseCase.fetch()
 
         searchTask?.cancel()
         state = .loading

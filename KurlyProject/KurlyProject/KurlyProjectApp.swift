@@ -11,7 +11,10 @@ import SwiftUI
 struct KurlyProjectApp: App {
     var body: some Scene {
         WindowGroup {
-            SearchView(viewModel: SearchViewModel(repository: DefaultSearchResultRepository()))
+            SearchView(viewModel: SearchViewModel(
+                repository: DefaultSearchResultRepository(),
+                recentSearchUseCase: RecentSearchUseCase(repository: UserDefaultsRecentSearchRepository())
+            ))
         }
     }
 }
