@@ -59,6 +59,12 @@ final class SearchViewModel {
         recentSearches = recentSearchUseCase.fetch()
     }
 
+    /// 최근 검색어를 골랐을 때. 직접 입력한 검색과 같은 흐름(저장·시각 갱신 포함)을 탄다
+    func search(keyword: String) {
+        query = keyword
+        search()
+    }
+
     func search() {
         let keyword = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !keyword.isEmpty else { return }
