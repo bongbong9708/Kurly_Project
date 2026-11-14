@@ -49,6 +49,16 @@ final class SearchViewModel {
     /// SIGABRT로 죽었다 (iOS 27.1에서는 정상). deinit에서 하는 일이 없으므로 격리가 필요 없다.
     nonisolated deinit {}
 
+    func delete(keyword: String) {
+        recentSearchUseCase.delete(keyword: keyword)
+        recentSearches = recentSearchUseCase.fetch()
+    }
+
+    func deleteAll() {
+        recentSearchUseCase.deleteAll()
+        recentSearches = recentSearchUseCase.fetch()
+    }
+
     func search() {
         let keyword = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !keyword.isEmpty else { return }

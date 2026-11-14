@@ -38,10 +38,34 @@ struct SearchView: View {
 
     private var recentSearchList: some View {
         List {
-            Section("최근 검색") {
+            Section {
                 // 대소문자 무시 중복 제거로 keyword가 유일하므로 id로 쓴다
                 ForEach(viewModel.recentSearches, id: \.keyword) { recentSearch in
-                    Text(recentSearch.keyword)
+                    HStack {
+                        Text(recentSearch.keyword)
+                        Spacer()
+                        Button {
+                            viewModel.delete(keyword: recentSearch.keyword)
+                        } label: {
+                            Image(systemName: "xmark")
+                                .foregroundStyle(.secondary)
+                        }
+                        // List 행 안의 버튼은 기본적으로 행 전체 탭에 반응한다.
+                        // 행 탭은 #7에서 검색에 쓰므로 버튼 영역만 반응하게 한다
+                        .buttonStyle(.borderless)
+                        .accessibilityLabel("\(recentSearch.keyword) 삭제")
+                    }
+                }
+            } header: {
+                Text("최근 검색")
+            } footer: {
+                if !viewModel.recentSearches.isEmpty {
+                    HStack {
+                        Spacer()
+                        Button("전체삭제") {
+                            viewModel.deleteAll()
+                        }
+                    }
                 }
             }
         }

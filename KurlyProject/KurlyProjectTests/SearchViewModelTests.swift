@@ -131,6 +131,28 @@ final class SearchViewModelTests: XCTestCase {
         XCTAssertEqual(recentSearchRepository.searches.map(\.keyword), ["swift"])
     }
 
+    func test_최근_검색어를_삭제하면_목록에서_사라진다() {
+        sut.query = "swift"
+        sut.search()
+        sut.query = "kotlin"
+        sut.search()
+
+        sut.delete(keyword: "swift")
+
+        XCTAssertEqual(sut.recentSearches.map(\.keyword), ["kotlin"])
+        XCTAssertEqual(recentSearchRepository.searches.map(\.keyword), ["kotlin"])
+    }
+
+    func test_최근_검색어를_전체_삭제하면_목록이_빈다() {
+        sut.query = "swift"
+        sut.search()
+
+        sut.deleteAll()
+
+        XCTAssertTrue(sut.recentSearches.isEmpty)
+        XCTAssertTrue(recentSearchRepository.searches.isEmpty)
+    }
+
     func test_검색이_실패해도_최근_검색어에는_저장한다() async {
         repository.handler = { _, _ in throw SearchError.network }
         sut.query = "swift"
