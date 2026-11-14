@@ -9,6 +9,9 @@ struct SearchView: View {
 
     @State private var viewModel: SearchViewModel
 
+    /// 최근 검색어를 눌러 검색했을 때도 직접 입력했을 때처럼 검색바를 활성화해 "취소" 버튼을 보여주기 위해 둔다
+    @State private var isSearchPresented = false
+
     init(viewModel: SearchViewModel) {
         _viewModel = State(initialValue: viewModel)
     }
@@ -18,7 +21,7 @@ struct SearchView: View {
         NavigationStack {
             content
                 .navigationTitle("Search")
-                .searchable(text: $viewModel.query, prompt: "저장소 검색")
+                .searchable(text: $viewModel.query, isPresented: $isSearchPresented, prompt: "저장소 검색")
                 // 입력 중에는 호출하지 않고, 키보드 search를 눌렀을 때만 검색한다
                 .onSubmit(of: .search) {
                     viewModel.search()
@@ -42,7 +45,15 @@ struct SearchView: View {
                 // 대소문자 무시 중복 제거로 keyword가 유일하므로 id로 쓴다
                 ForEach(viewModel.recentSearches, id: \.keyword) { recentSearch in
                     HStack {
-                        Text(recentSearch.keyword)
+                        // 기본 버튼 스타일이라 x 버튼(borderless)을 뺀 행 전체가 이 버튼에 반응한다
+                        Button {
+                            isSearchPresented = true
+                            viewModel.search(keyword: recentSearch.keyword)
+                        } label: {
+                            Text(recentSearch.keyword)
+                                // 버튼 안에서는 `.primary`가 강조색을 가리키므로 `Color.primary`로 일반 글자색을 지정한다
+                                .foregroundStyle(Color.primary)
+                        }
                         Spacer()
                         Button {
                             viewModel.delete(keyword: recentSearch.keyword)

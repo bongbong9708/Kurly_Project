@@ -31,6 +31,7 @@ final class SearchViewModelTests: XCTestCase {
 
     private var repository: MockSearchResultRepository!
     private var recentSearchRepository: InMemoryRecentSearchRepository!
+    private var currentTime: TimeInterval = 0
     private var sut: SearchViewModel!
 
     override func setUp() {
@@ -43,7 +44,11 @@ final class SearchViewModelTests: XCTestCase {
     private func makeSUT() -> SearchViewModel {
         SearchViewModel(
             repository: repository,
-            recentSearchUseCase: RecentSearchUseCase(repository: recentSearchRepository)
+            // 연달아 저장해도 시각이 겹치지 않도록 저장할 때마다 1초씩 흐르는 시계를 쓴다
+            recentSearchUseCase: RecentSearchUseCase(repository: recentSearchRepository, now: { [unowned self] in
+                currentTime += 1
+                return Date(timeIntervalSince1970: currentTime)
+            })
         )
     }
 
@@ -129,6 +134,29 @@ final class SearchViewModelTests: XCTestCase {
         // 검색 완료를 기다리지 않는다. 검색을 실행한 순간 저장한다
         XCTAssertEqual(sut.recentSearches.map(\.keyword), ["swift"])
         XCTAssertEqual(recentSearchRepository.searches.map(\.keyword), ["swift"])
+    }
+
+    func test_최근_검색어를_고르면_그_키워드로_검색한다() async {
+        let result = makeResult(totalCount: 1)
+        repository.handler = { _, _ in result }
+
+        sut.search(keyword: "swift")
+
+        XCTAssertEqual(sut.query, "swift")
+        await sut.searchTask?.value
+        XCTAssertEqual(repository.receivedKeywords, ["swift"])
+        XCTAssertEqual(sut.state, .loaded(result))
+    }
+
+    func test_최근_검색어를_고르면_목록_맨_위로_올라온다() {
+        sut.query = "swift"
+        sut.search()
+        sut.query = "kotlin"
+        sut.search()
+
+        sut.search(keyword: "swift")
+
+        XCTAssertEqual(sut.recentSearches.map(\.keyword), ["swift", "kotlin"])
     }
 
     func test_최근_검색어를_삭제하면_목록에서_사라진다() {
