@@ -63,6 +63,11 @@ struct GitHubSearchAPIClient {
             URLQueryItem(name: "q", value: keyword),
             URLQueryItem(name: "page", value: String(page))
         ]
+        // `queryItems`는 `+`를 쿼리에서 허용되는 문자로 보고 그대로 둔다.
+        // 하지만 서버는 쿼리의 `+`를 공백으로 읽어서 `c++`가 `c  `로 검색된다.
+        // 인코딩이 끝난 뒤 남아 있는 `+`는 사용자가 입력한 것뿐이라 `%2B`로 바꿔도 안전하다.
+        components.percentEncodedQuery = components.percentEncodedQuery?
+            .replacingOccurrences(of: "+", with: "%2B")
         return components.url!
     }
 }
