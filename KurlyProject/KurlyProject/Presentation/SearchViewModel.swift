@@ -37,6 +37,13 @@ final class SearchViewModel {
         self.repository = repository
     }
 
+    /// iOS 18 이하에서 해제 시 크래시를 막기 위해 deinit을 메인 액터 밖에서 실행한다.
+    ///
+    /// 빌드 설정(기본 액터 격리 MainActor + Approachable Concurrency)에서는 deinit이 메인 액터로
+    /// 옮겨져 실행되는데, 이를 구버전 OS에서 돌리는 호환 코드(BackDeploy)가 iOS 18.6 시뮬레이터에서
+    /// SIGABRT로 죽었다 (iOS 27.1에서는 정상). deinit에서 하는 일이 없으므로 격리가 필요 없다.
+    nonisolated deinit {}
+
     func search() {
         let keyword = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !keyword.isEmpty else { return }
