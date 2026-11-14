@@ -79,6 +79,20 @@ final class GitHubSearchAPIClientTests: XCTestCase {
         XCTAssertEqual(components.queryItems?.first(where: { $0.name == "q" })?.value, "ios swift")
     }
 
+    func test_플러스가_있는_키워드는_플러스를_인코딩한다() async throws {
+        // 서버는 쿼리의 `+`를 공백으로 읽는다. 인코딩하지 않으면 `c++`가 `c  `로 검색된다
+        let (sut, mock) = makeClient(.success((validJSON, httpResponse(200))))
+
+        _ = try await sut.search(keyword: "c++", page: 1)
+
+        let url = try XCTUnwrap(mock.lastRequest?.url)
+        let components = try XCTUnwrap(URLComponents(url: url, resolvingAgainstBaseURL: false))
+        XCTAssertEqual(
+            components.percentEncodedQueryItems?.first(where: { $0.name == "q" })?.value,
+            "c%2B%2B"
+        )
+    }
+
     // MARK: - 성공
 
     func test_200이면_DTO를_돌려준다() async throws {
