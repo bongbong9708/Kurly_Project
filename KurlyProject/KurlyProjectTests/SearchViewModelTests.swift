@@ -19,16 +19,32 @@ private final class MockSearchResultRepository: SearchResultRepository {
     }
 }
 
+private final class InMemoryRecentSearchRepository: RecentSearchRepository {
+    var searches: [RecentSearch] = []
+
+    func fetch() -> [RecentSearch] { searches }
+    func save(_ searches: [RecentSearch]) { self.searches = searches }
+}
+
 @MainActor
 final class SearchViewModelTests: XCTestCase {
 
     private var repository: MockSearchResultRepository!
+    private var recentSearchRepository: InMemoryRecentSearchRepository!
     private var sut: SearchViewModel!
 
     override func setUp() {
         super.setUp()
         repository = MockSearchResultRepository()
-        sut = SearchViewModel(repository: repository)
+        recentSearchRepository = InMemoryRecentSearchRepository()
+        sut = makeSUT()
+    }
+
+    private func makeSUT() -> SearchViewModel {
+        SearchViewModel(
+            repository: repository,
+            recentSearchUseCase: RecentSearchUseCase(repository: recentSearchRepository)
+        )
     }
 
     private func makeResult(totalCount: Int) -> SearchResult {
@@ -93,6 +109,36 @@ final class SearchViewModelTests: XCTestCase {
 
         XCTAssertTrue(repository.receivedKeywords.isEmpty)
         XCTAssertEqual(sut.state, .idle)
+        XCTAssertTrue(sut.recentSearches.isEmpty)
+    }
+
+    // MARK: - 최근 검색어
+
+    func test_생성할_때_저장된_최근_검색어를_불러온다() {
+        let saved = [RecentSearch(keyword: "swift", searchedAt: Date(timeIntervalSince1970: 100))]
+        recentSearchRepository.searches = saved
+
+        XCTAssertEqual(makeSUT().recentSearches, saved)
+    }
+
+    func test_검색하면_공백을_잘라낸_검색어가_최근_검색어에_추가된다() {
+        sut.query = "  swift  "
+
+        sut.search()
+
+        // 검색 완료를 기다리지 않는다. 검색을 실행한 순간 저장한다
+        XCTAssertEqual(sut.recentSearches.map(\.keyword), ["swift"])
+        XCTAssertEqual(recentSearchRepository.searches.map(\.keyword), ["swift"])
+    }
+
+    func test_검색이_실패해도_최근_검색어에는_저장한다() async {
+        repository.handler = { _, _ in throw SearchError.network }
+        sut.query = "swift"
+
+        sut.search()
+        await sut.searchTask?.value
+
+        XCTAssertEqual(sut.recentSearches.map(\.keyword), ["swift"])
     }
 
     // MARK: - 실패

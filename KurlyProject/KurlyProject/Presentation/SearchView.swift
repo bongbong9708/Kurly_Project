@@ -26,9 +26,30 @@ struct SearchView: View {
         }
     }
 
-    // 상태별 화면은 최소한으로만 둔다. 결과 행은 #8~#10, 에러 화면은 #12에서 만든다
     @ViewBuilder
     private var content: some View {
+        // 검색 상태와 상관없이 입력이 비어 있으면 최근 검색어를 보여준다 ("취소"로 입력을 비운 경우 포함)
+        if viewModel.query.isEmpty {
+            recentSearchList
+        } else {
+            searchResultContent
+        }
+    }
+
+    private var recentSearchList: some View {
+        List {
+            Section("최근 검색") {
+                // 대소문자 무시 중복 제거로 keyword가 유일하므로 id로 쓴다
+                ForEach(viewModel.recentSearches, id: \.keyword) { recentSearch in
+                    Text(recentSearch.keyword)
+                }
+            }
+        }
+    }
+
+    // 상태별 화면은 최소한으로만 둔다. 결과 행은 #8~#10, 에러 화면은 #12에서 만든다
+    @ViewBuilder
+    private var searchResultContent: some View {
         switch viewModel.state {
         case .idle:
             Color.clear
@@ -45,5 +66,8 @@ struct SearchView: View {
 }
 
 #Preview {
-    SearchView(viewModel: SearchViewModel(repository: DefaultSearchResultRepository()))
+    SearchView(viewModel: SearchViewModel(
+        repository: DefaultSearchResultRepository(),
+        recentSearchUseCase: RecentSearchUseCase(repository: UserDefaultsRecentSearchRepository())
+    ))
 }

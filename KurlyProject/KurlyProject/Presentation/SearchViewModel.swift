@@ -31,10 +31,15 @@ final class SearchViewModel {
     /// 테스트가 검색이 끝날 때까지 기다릴 수 있도록 읽기는 열어 둔다.
     private(set) var searchTask: Task<Void, Never>?
 
-    private let repository: SearchResultRepository
+    private(set) var recentSearches: [RecentSearch]
 
-    init(repository: SearchResultRepository) {
+    private let repository: SearchResultRepository
+    private let recentSearchUseCase: RecentSearchUseCase
+
+    init(repository: SearchResultRepository, recentSearchUseCase: RecentSearchUseCase) {
         self.repository = repository
+        self.recentSearchUseCase = recentSearchUseCase
+        self.recentSearches = recentSearchUseCase.fetch()
     }
 
     /// iOS 18 이하에서 해제 시 크래시를 막기 위해 deinit을 메인 액터 밖에서 실행한다.
@@ -47,6 +52,10 @@ final class SearchViewModel {
     func search() {
         let keyword = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !keyword.isEmpty else { return }
+
+        // 검색 결과와 상관없이 검색을 실행한 순간 저장한다
+        recentSearchUseCase.save(keyword: keyword)
+        recentSearches = recentSearchUseCase.fetch()
 
         searchTask?.cancel()
         state = .loading
