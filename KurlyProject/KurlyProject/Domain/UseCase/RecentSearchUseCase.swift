@@ -39,4 +39,13 @@ struct RecentSearchUseCase {
         searches.sort { $0.searchedAt > $1.searchedAt }
         repository.save(Array(searches.prefix(Self.maxCount)))
     }
+
+    /// - Parameter keyword: 화면에 보이는 저장된 표기 그대로 받으므로 대소문자를 구분해 찾는다
+    func delete(keyword: String) {
+        repository.save(repository.fetch().filter { $0.keyword != keyword })
+    }
+
+    func deleteAll() {
+        repository.save([])
+    }
 }

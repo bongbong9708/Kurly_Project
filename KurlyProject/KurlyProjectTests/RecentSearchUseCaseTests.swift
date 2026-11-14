@@ -89,4 +89,25 @@ final class RecentSearchUseCaseTests: XCTestCase {
 
         XCTAssertEqual(sut.fetch().first, RecentSearch(keyword: "swift", searchedAt: Date(timeIntervalSince1970: 3)))
     }
+
+    // MARK: - 삭제
+
+    func test_개별_삭제_후_나머지_항목과_순서가_유지된다() {
+        sut.save(keyword: "a")
+        sut.save(keyword: "b")
+        sut.save(keyword: "c")
+
+        sut.delete(keyword: "b")
+
+        XCTAssertEqual(keywords, ["c", "a"])
+    }
+
+    func test_전체_삭제_후_목록이_비어_있다() {
+        sut.save(keyword: "a")
+        sut.save(keyword: "b")
+
+        sut.deleteAll()
+
+        XCTAssertEqual(sut.fetch(), [])
+    }
 }
