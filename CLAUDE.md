@@ -217,6 +217,11 @@ AI 활용 내용(프롬프트)은 제출물이다. 기능 하나가 끝날 때�
   - `isSearchPresented`로 판단하는 방식은 검색바를 닫으면 표시가 비워져 버렸다 ("알려진 함정" 참고)
 - 최근 검색어·자동완성을 고르면 키보드를 내리고(`UIApplication.endEditing()`) 검색한다. 이때 "취소" 버튼은 보이지 않는다 — 이유: <!-- TODO: 직접 작성 -->
 - 스크롤하거나 안내 화면의 빈 곳을 누르면 키보드를 내린다 — 이유: <!-- TODO: 직접 작성 -->
+- 검색바 "취소" 같은 시스템 문구는 기기 설정 언어를 따른다 (`KurlyProject-Info.plist`의 `CFBundleAllowMixedLocalizations`) — 이유: <!-- TODO: 직접 작성 -->
+  - 앱 기본 언어가 영어이고 다른 지역화가 없어 시스템 문구가 항상 영어("Cancel")로 나왔다
+  - 이 키는 `INFOPLIST_KEY_` 빌드 설정으로 넣을 수 없어, 동기화 폴더 밖에 별도 plist를 두고 `INFOPLIST_FILE`로 합친다
+- 최근 검색어 삭제 버튼은 연회색 원 안의 회색 x(`xmark.circle.fill`)로 둔다 — 이유: <!-- TODO: 직접 작성 -->
+- 검색바 첫 글자 자동 대문자는 그대로 둔다 — 이유: <!-- TODO: 직접 작성 -->
   - 검색하지 않고 키보드만 내리면 고친 검색어 아래 이전 결과가 그대로 보인다. 그대로 둔다
 
 ### 검색 결과
@@ -289,8 +294,7 @@ KurlyProject/
 docs/
 └── ai/
     ├── README.md     # AI 활용 요약 (도구, 원칙, 단계별 요약, AI가 틀린 사례, 회고)
-    ├── logs/         # 기능별 기록 (이슈 번호와 맞춤)
-    └── raw/          # 원본 대화 export
+    └── logs/         # 기능별 기록 (이슈 번호와 맞춤)
 ```
 
 ## Git 규칙
@@ -322,9 +326,6 @@ xcodebuild -project KurlyProject/KurlyProject.xcodeproj -scheme KurlyProject -de
 |---|---|---|
 | 한글 테스트명 | 통일 여부. 테스트가 적을 때 바꾸는 편이 싸다 | 미정 |
 | UI 테스트 타깃 | 시뮬레이터 실행 거부로 `-only-testing:KurlyProjectTests`로만 돌리는 중. 원인 미확인 | 미정 |
-| `x` 아이콘 색 | 최근 검색어 삭제 버튼이 회색이 아니라 강조색으로 보인다. 버튼 안에서 `.secondary`가 강조색 계열로 해석됨 → `Color.secondary` | 미정 |
-| 검색바 자동 대문자 | 첫 글자가 자동으로 대문자가 되어 `kotlin`이 `Kotlin`으로 저장된다 | 미정 |
-| "Cancel" 표기 | 검색바 버튼이 "취소"가 아니라 "Cancel"로 나온다. Development Region이 영어인 것으로 추정 (미확인) | 미정 |
 | 하드웨어 키보드 | 키보드 표시 알림이 오지 않으면 입력 중 판단이 안 될 수 있다. 미확인 | 미정 |
 | 다음 페이지 실패 화면 | 요청 한도 초과를 재현하지 못해 화면으로 확인하지 못했다 | 미정 |
 | AI 기록 결과 칸 | `docs/ai/logs` 10~12의 "결과" 칸(PR·커밋)이 비어 있다. `docs/ai/README.md` 단계별 표도 02까지만 있다 | 미정 |
