@@ -24,12 +24,29 @@ final class SearchViewModel {
         case failed(SearchError)
     }
 
+    /// 다음 페이지 상태. 첫 검색 상태(`State`)와 따로 둔다.
+    ///
+    /// 다음 페이지가 실패해도 이미 받은 결과는 그대로 보여줘야 하므로 `State`를 `.failed`로 바꾸지 않는다
+    enum NextPageState: Equatable {
+        case idle
+        case loading
+        case failed(SearchError)
+    }
+
+    /// GitHub 검색 API는 결과를 1,000개까지만 돌려준다. 그 뒤 페이지를 요청하면 422로 실패한다
+    static let maxResultCount = 1000
+
+    /// 끝에서 몇 번째 행이 보일 때 다음 페이지를 미리 요청할지.
+    /// 한 페이지 30개 중 25번째쯤에서 요청해 끝에 닿기 전에 응답이 오게 한다
+    static let prefetchThreshold = 5
+
     var query = "" {
         didSet {
             // 검색바의 "취소"(또는 지우기 버튼)로 검색어가 비면 검색 전 상태로 돌아간다.
             // 진행 중인 요청도 취소해 늦게 온 결과가 idle을 덮어쓰지 않게 한다
             if query.isEmpty && !oldValue.isEmpty {
                 searchTask?.cancel()
+                resetPagination()
                 state = .idle
             }
         }
@@ -39,6 +56,18 @@ final class SearchViewModel {
     /// 진행 중인 검색. 재검색 시 취소하려고 들고 있는다.
     /// 테스트가 검색이 끝날 때까지 기다릴 수 있도록 읽기는 열어 둔다.
     private(set) var searchTask: Task<Void, Never>?
+
+    private(set) var nextPageState: NextPageState = .idle
+
+    /// 진행 중인 다음 페이지 요청. 새 검색 시 취소하려고 들고 있는다. 테스트가 기다릴 수 있도록 읽기는 열어 둔다
+    private(set) var nextPageTask: Task<Void, Never>?
+
+    /// 지금 보여주는 결과의 검색어. 검색 후 검색바를 고쳐도 다음 페이지는 이 검색어로 요청해야 해서 따로 둔다
+    private var currentKeyword: String?
+    private var currentPage = 1
+    /// 중복을 빼기 전, 서버에서 받은 항목 수. 1,000개 제한과 비교하는 데 쓴다
+    private var receivedCount = 0
+    private var hasNextPage = false
 
     private(set) var recentSearches: [RecentSearch]
 
@@ -101,8 +130,72 @@ final class SearchViewModel {
         load(keyword: keyword)
     }
 
+    /// 보이기 시작한 행이 끝에서 `prefetchThreshold`번째 안쪽이면 다음 페이지를 요청한다.
+    ///
+    /// 로딩 중이거나 실패한 상태에서는 요청하지 않는다. 실패 후 스크롤할 때마다 다시 요청하지 않도록
+    /// 다시 요청은 `retryNextPage()`로만 한다
+    func loadNextPageIfNeeded(currentItem: GitHubRepository) {
+        guard case .loaded(let result) = state,
+              let index = result.repositories.firstIndex(where: { $0.id == currentItem.id }),
+              index >= result.repositories.count - Self.prefetchThreshold
+        else { return }
+        loadNextPage()
+    }
+
+    func retryNextPage() {
+        guard case .failed = nextPageState else { return }
+        nextPageState = .idle
+        loadNextPage()
+    }
+
+    private func loadNextPage() {
+        guard hasNextPage, nextPageState == .idle, let keyword = currentKeyword else { return }
+        let page = currentPage + 1
+        nextPageState = .loading
+
+        nextPageTask = Task {
+            do {
+                let next = try await repository.search(keyword: keyword, page: page)
+                // 새 검색이 시작돼 취소됐으면 이전 검색어의 결과를 섞지 않는다
+                guard !Task.isCancelled, case .loaded(let current) = state else { return }
+
+                // 요청 사이에 검색 결과 순서가 바뀌면 앞 페이지 항목이 다시 올 수 있다.
+                // 같은 id가 두 번 있으면 List가 행을 구분하지 못하므로 빼고 붙인다
+                let loadedIDs = Set(current.repositories.map(\.id))
+                let newRepositories = next.repositories.filter { !loadedIDs.contains($0.id) }
+                state = .loaded(SearchResult(
+                    totalCount: current.totalCount,
+                    repositories: current.repositories + newRepositories
+                ))
+                currentPage = page
+                updateHasNextPage(totalCount: current.totalCount, lastPage: next)
+                nextPageState = .idle
+            } catch {
+                guard !Task.isCancelled else { return }
+                nextPageState = .failed(error as? SearchError ?? .network)
+            }
+        }
+    }
+
+    /// 받은 개수가 전체(최대 1,000개)보다 적고, 마지막으로 받은 페이지가 비어 있지 않으면 다음 페이지가 있다
+    private func updateHasNextPage(totalCount: Int, lastPage: SearchResult) {
+        receivedCount += lastPage.repositories.count
+        hasNextPage = !lastPage.repositories.isEmpty
+            && receivedCount < min(totalCount, Self.maxResultCount)
+    }
+
+    private func resetPagination() {
+        nextPageTask?.cancel()
+        nextPageState = .idle
+        currentPage = 1
+        receivedCount = 0
+        hasNextPage = false
+    }
+
     private func load(keyword: String) {
         searchTask?.cancel()
+        resetPagination()
+        currentKeyword = keyword
         state = .loading
 
         searchTask = Task {
@@ -110,6 +203,7 @@ final class SearchViewModel {
                 let result = try await repository.search(keyword: keyword, page: 1)
                 // 취소를 무시하고 늦게 돌아온 이전 요청이 최신 결과를 덮어쓰지 않게 막는다
                 guard !Task.isCancelled else { return }
+                updateHasNextPage(totalCount: result.totalCount, lastPage: result)
                 state = .loaded(result)
             } catch {
                 // 취소는 새 검색이 시작됐다는 뜻이다. 상태는 새 검색이 관리한다
