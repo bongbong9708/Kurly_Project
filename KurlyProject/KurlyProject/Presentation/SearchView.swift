@@ -86,7 +86,6 @@ struct SearchView: View {
         }
     }
 
-    // 에러 화면은 #12에서 만든다
     @ViewBuilder
     private var searchResultContent: some View {
         switch viewModel.state {
@@ -94,6 +93,13 @@ struct SearchView: View {
             Color.clear
         case .loading:
             ProgressView()
+        case .loaded(let result) where result.repositories.isEmpty:
+            // `ContentUnavailableView.search`는 앱 언어(현재 영어)로 문구가 나와 직접 쓴다
+            ContentUnavailableView(
+                "검색 결과 없음",
+                systemImage: "magnifyingglass",
+                description: Text("다른 검색어로 검색해 보세요.")
+            )
         case .loaded(let result):
             List {
                 Section {
@@ -107,8 +113,16 @@ struct SearchView: View {
                     Text("\(result.totalCount.formatted())개 저장소")
                 }
             }
-        case .failed:
-            Text("검색에 실패했습니다")
+        case .failed(let error):
+            ContentUnavailableView {
+                Label(error.title, systemImage: error.systemImage)
+            } description: {
+                Text(error.message)
+            } actions: {
+                Button("다시 시도") {
+                    viewModel.retry()
+                }
+            }
         }
     }
 }

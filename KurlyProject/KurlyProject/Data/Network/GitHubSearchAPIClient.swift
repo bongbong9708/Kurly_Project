@@ -45,12 +45,23 @@ struct GitHubSearchAPIClient {
             } catch {
                 throw SearchError.decoding
             }
-        case 403, 429:
+        case 429:
             // 인증 없는 Search API는 한도가 낮아 실제로 자주 걸린다
+            throw SearchError.rateLimited
+        case 403 where isRateLimited(http):
             throw SearchError.rateLimited
         default:
             throw SearchError.unexpectedStatus(http.statusCode)
         }
+    }
+
+    /// 403은 권한 문제 등에도 쓰이므로 한도 초과인지 헤더로 확인한다.
+    ///
+    /// GitHub은 1차 한도를 다 쓰면 `x-ratelimit-remaining: 0`을, 짧은 시간에 요청이 몰린
+    /// 2차 한도에는 `retry-after`를 준다. 둘 다 없으면 한도 문제가 아니다.
+    private func isRateLimited(_ response: HTTPURLResponse) -> Bool {
+        response.value(forHTTPHeaderField: "x-ratelimit-remaining") == "0"
+            || response.value(forHTTPHeaderField: "retry-after") != nil
     }
 
     /// 쿼리 인코딩은 `URLComponents`에 맡긴다.
