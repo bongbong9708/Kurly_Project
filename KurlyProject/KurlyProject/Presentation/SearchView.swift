@@ -156,7 +156,6 @@ struct SearchView: View {
         case .loading:
             ProgressView()
         case .loaded(let result) where result.repositories.isEmpty:
-            // `ContentUnavailableView.search`는 앱 언어(현재 영어)로 문구가 나와 직접 쓴다
             ContentUnavailableView(
                 "검색 결과 없음",
                 systemImage: "magnifyingglass",
