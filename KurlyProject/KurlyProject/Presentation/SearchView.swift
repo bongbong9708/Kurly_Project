@@ -9,8 +9,11 @@ struct SearchView: View {
 
     @State private var viewModel: SearchViewModel
 
-    /// 최근 검색어를 눌러 검색했을 때도 직접 입력했을 때처럼 검색바를 활성화해 "취소" 버튼을 보여주기 위해 둔다
-    @State private var isSearchPresented = false
+    /// 검색바에 키보드가 올라와 있는지. 올라와 있으면 입력 중으로 보고 검색 결과 대신 자동완성을 보여준다.
+    ///
+    /// iOS 17에는 `.searchable` 검색바의 포커스를 읽는 API(`.searchFocused`, iOS 18+)가 없어
+    /// 키보드가 뜨고 내려가는 알림으로 대신한다
+    @State private var isEditing = false
 
     init(viewModel: SearchViewModel) {
         _viewModel = State(initialValue: viewModel)
@@ -20,38 +23,75 @@ struct SearchView: View {
         // `.searchable`은 NavigationStack 안에서 큰 타이틀 아래 검색바와 "취소" 버튼을 기본으로 그린다
         NavigationStack {
             content
+                .scrollDismissesKeyboard(.immediately)
                 // List 같은 lazy 컨테이너 안에 두면 동작하지 않아 List 바깥에 붙인다
                 .navigationDestination(for: GitHubRepository.self) { repository in
                     SearchDetailWebView(repository: repository)
                 }
                 .navigationTitle("Search")
-                .searchable(text: $viewModel.query, isPresented: $isSearchPresented, prompt: "저장소 검색")
+                .searchable(text: $viewModel.query, prompt: "저장소 검색")
                 // 입력 중에는 호출하지 않고, 키보드 search를 눌렀을 때만 검색한다
                 .onSubmit(of: .search) {
                     viewModel.search()
+                }
+                .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
+                    isEditing = true
+                }
+                .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
+                    isEditing = false
                 }
         }
     }
 
     @ViewBuilder
     private var content: some View {
-        // 검색 상태와 상관없이 입력이 비어 있으면 최근 검색어를 보여준다 ("취소"로 입력을 비운 경우 포함)
-        if viewModel.query.isEmpty {
-            recentSearchList
+        // 검색 전(idle)이거나 키보드가 올라와 있으면(입력 중) 최근 검색어·자동완성을 보여준다.
+        // "취소"로 입력을 비우면 ViewModel이 idle로 돌아가므로 이 경우도 포함된다
+        if viewModel.state == .idle || isEditing {
+            let isSuggestion = !viewModel.query.isEmpty
+            let searches = isSuggestion ? viewModel.suggestions : viewModel.recentSearches
+
+            if searches.isEmpty {
+                Group {
+                    if isSuggestion {
+                        ContentUnavailableView(
+                            "일치하는 최근 검색어 없음",
+                            systemImage: "magnifyingglass",
+                            description: Text("키보드의 검색 버튼을 누르면 저장소를 검색합니다.")
+                        )
+                    } else {
+                        ContentUnavailableView(
+                            "최근 검색어 없음",
+                            systemImage: "clock.arrow.circlepath",
+                            description: Text("검색한 단어가 여기에 표시됩니다.")
+                        )
+                    }
+                }
+                // 빈 곳을 누르면 키보드를 내린다.
+                // 목록 화면 전체에 붙이면 행 버튼보다 먼저 반응해 행을 눌러도 검색되지 않아, 행이 없는 빈 화면에만 붙인다
+                .contentShape(Rectangle())
+                .onTapGesture { UIApplication.shared.endEditing() }
+            } else {
+                recentSearchList(searches, isSuggestion: isSuggestion)
+            }
         } else {
             searchResultContent
         }
     }
 
-    private var recentSearchList: some View {
+    /// 최근 검색어 목록. 입력이 비어 있으면 전체(x 삭제 + 헤더·전체삭제),
+    /// 입력이 있으면 입력을 포함하는 것만(자동완성, 날짜 표시) 보여준다.
+    /// 두 경우 모두 `[RecentSearch]`이고 행을 누르면 검색하는 동작이 같아 목록 하나로 그린다
+    private func recentSearchList(_ searches: [RecentSearch], isSuggestion: Bool) -> some View {
         List {
             Section {
                 // 대소문자 무시 중복 제거로 keyword가 유일하므로 id로 쓴다
-                ForEach(viewModel.recentSearches, id: \.keyword) { recentSearch in
+                ForEach(searches, id: \.keyword) { recentSearch in
                     HStack {
                         // 기본 버튼 스타일이라 x 버튼(borderless)을 뺀 행 전체가 이 버튼에 반응한다
                         Button {
-                            isSearchPresented = true
+                            // 키보드가 남아 있으면 입력 중으로 보여 결과 대신 자동완성이 계속 보이므로 내린다
+                            UIApplication.shared.endEditing()
                             viewModel.search(keyword: recentSearch.keyword)
                         } label: {
                             Text(recentSearch.keyword)
@@ -59,22 +99,31 @@ struct SearchView: View {
                                 .foregroundStyle(Color.primary)
                         }
                         Spacer()
-                        Button {
-                            viewModel.delete(keyword: recentSearch.keyword)
-                        } label: {
-                            Image(systemName: "xmark")
-                                .foregroundStyle(.secondary)
+                        if isSuggestion {
+                            Text(recentSearch.searchedAt, formatter: Self.suggestionDateFormatter)
+                                .font(.footnote)
+                                .foregroundStyle(Color.secondary)
+                        } else {
+                            Button {
+                                viewModel.delete(keyword: recentSearch.keyword)
+                            } label: {
+                                Image(systemName: "xmark")
+                                    .foregroundStyle(.secondary)
+                            }
+                            // List 행 안의 버튼은 기본적으로 행 전체 탭에 반응한다.
+                            // 행 탭은 #7에서 검색에 쓰므로 버튼 영역만 반응하게 한다
+                            .buttonStyle(.borderless)
+                            .accessibilityLabel("\(recentSearch.keyword) 삭제")
                         }
-                        // List 행 안의 버튼은 기본적으로 행 전체 탭에 반응한다.
-                        // 행 탭은 #7에서 검색에 쓰므로 버튼 영역만 반응하게 한다
-                        .buttonStyle(.borderless)
-                        .accessibilityLabel("\(recentSearch.keyword) 삭제")
                     }
                 }
             } header: {
-                Text("최근 검색")
+                if !isSuggestion {
+                    Text("최근 검색")
+                }
             } footer: {
-                if !viewModel.recentSearches.isEmpty {
+                // 최근 검색어가 비면 이 목록 대신 빈 화면을 보여주므로 여기서는 항상 항목이 있다
+                if !isSuggestion {
                     HStack {
                         Spacer()
                         Button("전체삭제") {
@@ -86,10 +135,19 @@ struct SearchView: View {
         }
     }
 
+    /// 앱 언어 설정과 상관없이 같은 모양으로 보이도록 형식을 고정한다
+    private static let suggestionDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yy. MM. dd."
+        return formatter
+    }()
+
     @ViewBuilder
     private var searchResultContent: some View {
         switch viewModel.state {
         case .idle:
+            // idle이면 위 content에서 최근 검색어를 보여주므로 여기에 오지 않는다. switch를 빠짐없이 채우려고 둔다
             Color.clear
         case .loading:
             ProgressView()

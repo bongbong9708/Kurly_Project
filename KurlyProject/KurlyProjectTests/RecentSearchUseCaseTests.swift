@@ -110,4 +110,40 @@ final class RecentSearchUseCaseTests: XCTestCase {
 
         XCTAssertEqual(sut.fetch(), [])
     }
+
+    // MARK: - 자동완성
+
+    private func makeSearches(_ keywords: [String]) -> [RecentSearch] {
+        keywords.map { RecentSearch(keyword: $0, searchedAt: Date(timeIntervalSince1970: 0)) }
+    }
+
+    func test_자동완성은_입력을_포함하는_검색어만_대소문자_무시하고_고른다() {
+        let searches = makeSearches(["SwiftUI", "kotlin", "swift"])
+
+        let suggestions = sut.suggestions(for: "WIFT", in: searches)
+
+        XCTAssertEqual(suggestions.map(\.keyword), ["SwiftUI", "swift"])
+    }
+
+    func test_자동완성은_받은_목록의_순서를_유지한다() {
+        let searches = makeSearches(["c-swift", "a-swift", "b-swift"])
+
+        let suggestions = sut.suggestions(for: "swift", in: searches)
+
+        XCTAssertEqual(suggestions.map(\.keyword), ["c-swift", "a-swift", "b-swift"])
+    }
+
+    func test_자동완성은_입력_앞뒤_공백을_잘라서_비교한다() {
+        let searches = makeSearches(["swift", "kotlin"])
+
+        let suggestions = sut.suggestions(for: " swift ", in: searches)
+
+        XCTAssertEqual(suggestions.map(\.keyword), ["swift"])
+    }
+
+    func test_자동완성은_일치하는_검색어가_없으면_빈_목록이다() {
+        let searches = makeSearches(["swift", "kotlin"])
+
+        XCTAssertEqual(sut.suggestions(for: "java", in: searches), [])
+    }
 }

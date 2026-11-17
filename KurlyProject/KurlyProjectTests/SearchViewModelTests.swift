@@ -205,7 +205,7 @@ final class SearchViewModelTests: XCTestCase {
 
     // MARK: - 다시 시도
 
-    func test_다시_시도하면_실패한_검색어로_다시_요청한다() async {
+    func test_다시_시도하면_같은_검색어로_다시_요청한다() async {
         let result = makeResult(totalCount: 1)
         var shouldFail = true
         repository.handler = { _, _ in
@@ -216,8 +216,6 @@ final class SearchViewModelTests: XCTestCase {
         sut.search()
         await sut.searchTask?.value
 
-        // 실패 화면에서 검색어를 고치기만 하고 search를 누르지 않은 경우
-        sut.query = "swi"
         shouldFail = false
         sut.retry()
         await sut.searchTask?.value
@@ -238,6 +236,49 @@ final class SearchViewModelTests: XCTestCase {
 
         XCTAssertEqual(sut.recentSearches, before)
         XCTAssertEqual(recentSearchRepository.searches, before)
+    }
+
+    // MARK: - 자동완성
+
+    func test_자동완성은_최근_검색어_중_입력을_포함하는_것만_최신순으로_보여준다() {
+        sut.search(keyword: "SwiftUI")
+        sut.search(keyword: "kotlin")
+        sut.search(keyword: "swift")
+
+        sut.query = "swi"
+
+        XCTAssertEqual(sut.suggestions.map(\.keyword), ["swift", "SwiftUI"])
+    }
+
+    // MARK: - 검색어 비우기 (취소)
+
+    func test_검색어를_비우면_idle로_돌아간다() async {
+        repository.handler = { _, _ in self.makeResult(totalCount: 1) }
+        sut.query = "swift"
+        sut.search()
+        await sut.searchTask?.value
+
+        sut.query = ""
+
+        XCTAssertEqual(sut.state, .idle)
+    }
+
+    func test_검색_중에_검색어를_비우면_늦게_온_결과로_덮어쓰지_않는다() async {
+        var release: CheckedContinuation<Void, Never>?
+        repository.handler = { _, _ in
+            await withCheckedContinuation { release = $0 }
+            return self.makeResult(totalCount: 1)
+        }
+        sut.query = "swift"
+        sut.search()
+        let task = sut.searchTask
+        while release == nil { await Task.yield() }
+
+        sut.query = ""
+        release?.resume()
+        await task?.value
+
+        XCTAssertEqual(sut.state, .idle)
     }
 
     // MARK: - 재검색
