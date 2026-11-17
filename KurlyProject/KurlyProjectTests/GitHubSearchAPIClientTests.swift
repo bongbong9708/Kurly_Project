@@ -22,12 +22,12 @@ private final class MockHTTPClient: HTTPClient {
     }
 }
 
-private func httpResponse(_ statusCode: Int) -> URLResponse {
+private func httpResponse(_ statusCode: Int, headers: [String: String]? = nil) -> URLResponse {
     HTTPURLResponse(
         url: URL(string: "https://api.github.com")!,
         statusCode: statusCode,
         httpVersion: nil,
-        headerFields: nil
+        headerFields: headers
     )!
 }
 
@@ -113,10 +113,26 @@ final class GitHubSearchAPIClientTests: XCTestCase {
         await assertThrows(.network) { try await sut.search(keyword: "swift", page: 1) }
     }
 
-    func test_403이면_rateLimited_에러() async {
-        let (sut, _) = makeClient(.success((Data(), httpResponse(403))))
+    func test_403이고_남은_한도가_0이면_rateLimited_에러() async {
+        let response = httpResponse(403, headers: ["x-ratelimit-remaining": "0"])
+        let (sut, _) = makeClient(.success((Data(), response)))
 
         await assertThrows(.rateLimited) { try await sut.search(keyword: "swift", page: 1) }
+    }
+
+    func test_403이고_retry_after가_있으면_rateLimited_에러() async {
+        // 2차 한도(짧은 시간에 몰린 요청)는 남은 한도와 상관없이 retry-after로 알려준다
+        let response = httpResponse(403, headers: ["x-ratelimit-remaining": "5", "retry-after": "60"])
+        let (sut, _) = makeClient(.success((Data(), response)))
+
+        await assertThrows(.rateLimited) { try await sut.search(keyword: "swift", page: 1) }
+    }
+
+    func test_한도와_관계없는_403은_코드를_담아서_전달한다() async {
+        let response = httpResponse(403, headers: ["x-ratelimit-remaining": "5"])
+        let (sut, _) = makeClient(.success((Data(), response)))
+
+        await assertThrows(.unexpectedStatus(403)) { try await sut.search(keyword: "swift", page: 1) }
     }
 
     func test_429면_rateLimited_에러() async {

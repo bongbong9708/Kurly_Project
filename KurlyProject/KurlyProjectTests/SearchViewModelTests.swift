@@ -203,6 +203,43 @@ final class SearchViewModelTests: XCTestCase {
         XCTAssertEqual(sut.state, .failed(.rateLimited))
     }
 
+    // MARK: - 다시 시도
+
+    func test_다시_시도하면_실패한_검색어로_다시_요청한다() async {
+        let result = makeResult(totalCount: 1)
+        var shouldFail = true
+        repository.handler = { _, _ in
+            if shouldFail { throw SearchError.network }
+            return result
+        }
+        sut.query = "swift"
+        sut.search()
+        await sut.searchTask?.value
+
+        // 실패 화면에서 검색어를 고치기만 하고 search를 누르지 않은 경우
+        sut.query = "swi"
+        shouldFail = false
+        sut.retry()
+        await sut.searchTask?.value
+
+        XCTAssertEqual(repository.receivedKeywords, ["swift", "swift"])
+        XCTAssertEqual(sut.state, .loaded(result))
+    }
+
+    func test_다시_시도는_최근_검색어를_다시_저장하지_않는다() async {
+        repository.handler = { _, _ in throw SearchError.network }
+        sut.query = "swift"
+        sut.search()
+        await sut.searchTask?.value
+        let before = sut.recentSearches
+
+        sut.retry()
+        await sut.searchTask?.value
+
+        XCTAssertEqual(sut.recentSearches, before)
+        XCTAssertEqual(recentSearchRepository.searches, before)
+    }
+
     // MARK: - 재검색
 
     func test_이전_검색이_늦게_끝나도_마지막_검색_결과를_보여준다() async {
