@@ -8,7 +8,7 @@ GitHub 저장소 검색 앱 — 최근 검색어 · 자동완성 · 검색 결�
 | 비동기 | Swift Concurrency (async/await) |
 | 아키텍처 | Clean Architecture (Presentation / Domain / Data) + MVVM |
 | 저장 | UserDefaults + Codable |
-| 테스트 | XCTest 단위 테스트 71개 |
+| 테스트 | XCTest 단위 테스트 72개 |
 | 외부 라이브러리 | 없음 |
 | 개발 환경 | Xcode 27.1 |
 
@@ -165,7 +165,7 @@ docs/ai/                   AI 활용 기록
 
 | 대상 | 개수 | 확인하는 것 |
 |---|---|---|
-| `SearchViewModelTests` | 30 | 검색 상태 전환, 최근 검색어 저장, 다시 시도, 취소 시 idle, 늦게 온 결과 무시, 페이지네이션 |
+| `SearchViewModelTests` | 31 | 검색 상태 전환, 최근 검색어 저장, 다시 시도, 취소 시 idle, 늦게 온 결과 무시, 페이지네이션 |
 | `GitHubSearchAPIClientTests` | 14 | 요청 URL·인코딩, 상태 코드·헤더별 에러 매핑, 취소와 네트워크 에러 구분 |
 | `RecentSearchUseCaseTests` | 12 | 중복 갱신, 정렬, 10개 제한, 삭제, 자동완성 필터 |
 | `SearchResultDTOTests` | 6 | 실제 응답 픽스처 디코딩, Entity 변환, 필수 키 누락 시 실패 |
