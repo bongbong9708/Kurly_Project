@@ -131,6 +131,8 @@ struct SearchView: View {
                         Button("전체삭제") {
                             viewModel.deleteAll()
                         }
+                        // 지우는 동작이라 강조색 대신 시스템 빨간색으로 구분한다
+                        .foregroundStyle(Color(.systemRed))
                     }
                 }
             }
