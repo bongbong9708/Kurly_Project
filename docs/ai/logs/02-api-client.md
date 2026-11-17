@@ -49,10 +49,10 @@ Domain이 DTO와 HTTP를 모르도록 Repository 경계를 만든다.
 
 ## 내가 판단·수정한 것
 
-| AI 제안 | 문제 | 수정 | 이유 |
-|---|---|---|---|
-| 모든 호출 실패를 `.network` 하나로 묶음 | 요청 취소까지 네트워크 에러가 되어, 새 검색어 입력 시 에러 화면이 뜸 | `SearchError.cancelled` 추가, `CancellationError`와 `URLError(.cancelled)` 둘 다 잡음 |  |
-| `+` 인코딩 문제, 403/429 구분, 한글 테스트명 | 지금 고칠 필요는 없다고 판단 | 보류 |  |
+| AI 제안 | 문제 | 수정 |
+|---|---|---|
+| 모든 호출 실패를 `.network` 하나로 묶음 | 요청 취소까지 네트워크 에러가 되어, 새 검색어 입력 시 에러 화면이 뜸 | `SearchError.cancelled` 추가, `CancellationError`와 `URLError(.cancelled)` 둘 다 잡음 |
+| `+` 인코딩 문제, 403/429 구분, 한글 테스트명 | 지금 고칠 필요는 없다고 판단 | 보류 |
 
 ## 검증
 

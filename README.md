@@ -175,9 +175,11 @@ docs/ai/                   AI 활용 기록
 
 ```bash
 xcodebuild -project KurlyProject/KurlyProject.xcodeproj -scheme KurlyProject \
-  -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.6' \
-  test -only-testing:KurlyProjectTests
+  -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
+  test
 ```
+
+시뮬레이터 이름은 설치된 기기에 맞게 바꾼다. Xcode에서는 ⌘U로 실행한다.
 
 ## 알려진 동작
 
