@@ -14,19 +14,11 @@
 			remoteGlobalIDString = 88A8FE9530A720F70086FC31;
 			remoteInfo = KurlyProject;
 		};
-		88A8FEAE30A720F80086FC31 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 88A8FE8E30A720F70086FC31 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 88A8FE9530A720F70086FC31;
-			remoteInfo = KurlyProject;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		88A8FE9630A720F70086FC31 /* KurlyProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KurlyProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		88A8FEA330A720F80086FC31 /* KurlyProjectTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KurlyProjectTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		88A8FEAD30A720F80086FC31 /* KurlyProjectUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KurlyProjectUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -38,11 +30,6 @@
 		88A8FEA630A720F80086FC31 /* KurlyProjectTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = KurlyProjectTests;
-			sourceTree = "<group>";
-		};
-		88A8FEB030A720F80086FC31 /* KurlyProjectUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = KurlyProjectUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -58,11 +45,6 @@
 			files = (
 			);
 		};
-		88A8FEAA30A720F80086FC31 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			files = (
-			);
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -71,7 +53,6 @@
 			children = (
 				88A8FE9830A720F70086FC31 /* KurlyProject */,
 				88A8FEA630A720F80086FC31 /* KurlyProjectTests */,
-				88A8FEB030A720F80086FC31 /* KurlyProjectUITests */,
 				88A8FE9730A720F70086FC31 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -81,7 +62,6 @@
 			children = (
 				88A8FE9630A720F70086FC31 /* KurlyProject.app */,
 				88A8FEA330A720F80086FC31 /* KurlyProjectTests.xctest */,
-				88A8FEAD30A720F80086FC31 /* KurlyProjectUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -128,27 +108,6 @@
 			productReference = 88A8FEA330A720F80086FC31 /* KurlyProjectTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		88A8FEAC30A720F80086FC31 /* KurlyProjectUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 88A8FEBB30A720F80086FC31 /* Build configuration list for PBXNativeTarget "KurlyProjectUITests" */;
-			buildPhases = (
-				88A8FEA930A720F80086FC31 /* Sources */,
-				88A8FEAA30A720F80086FC31 /* Frameworks */,
-				88A8FEAB30A720F80086FC31 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				88A8FEAF30A720F80086FC31 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				88A8FEB030A720F80086FC31 /* KurlyProjectUITests */,
-			);
-			name = KurlyProjectUITests;
-			productName = KurlyProjectUITests;
-			productReference = 88A8FEAD30A720F80086FC31 /* KurlyProjectUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -163,10 +122,6 @@
 						CreatedOnToolsVersion = 27.1;
 					};
 					88A8FEA230A720F80086FC31 = {
-						CreatedOnToolsVersion = 27.1;
-						TestTargetID = 88A8FE9530A720F70086FC31;
-					};
-					88A8FEAC30A720F80086FC31 = {
 						CreatedOnToolsVersion = 27.1;
 						TestTargetID = 88A8FE9530A720F70086FC31;
 					};
@@ -188,7 +143,6 @@
 			targets = (
 				88A8FE9530A720F70086FC31 /* KurlyProject */,
 				88A8FEA230A720F80086FC31 /* KurlyProjectTests */,
-				88A8FEAC30A720F80086FC31 /* KurlyProjectUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -200,11 +154,6 @@
 			);
 		};
 		88A8FEA130A720F80086FC31 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			files = (
-			);
-		};
-		88A8FEAB30A720F80086FC31 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
 			);
@@ -222,11 +171,6 @@
 			files = (
 			);
 		};
-		88A8FEA930A720F80086FC31 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			files = (
-			);
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -234,11 +178,6 @@
 			isa = PBXTargetDependency;
 			target = 88A8FE9530A720F70086FC31 /* KurlyProject */;
 			targetProxy = 88A8FEA430A720F80086FC31 /* PBXContainerItemProxy */;
-		};
-		88A8FEAF30A720F80086FC31 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 88A8FE9530A720F70086FC31 /* KurlyProject */;
-			targetProxy = 88A8FEAE30A720F80086FC31 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -482,46 +421,6 @@
 			};
 			name = Release;
 		};
-		88A8FEBC30A720F80086FC31 /* Debug configuration for PBXNativeTarget "KurlyProjectUITests" */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = F9T64NW26M;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.sangbong.KurlyProjectUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = KurlyProject;
-			};
-			name = Debug;
-		};
-		88A8FEBD30A720F80086FC31 /* Release configuration for PBXNativeTarget "KurlyProjectUITests" */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = F9T64NW26M;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.sangbong.KurlyProjectUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = KurlyProject;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -546,14 +445,6 @@
 			buildConfigurations = (
 				88A8FEB930A720F80086FC31 /* Debug configuration for PBXNativeTarget "KurlyProjectTests" */,
 				88A8FEBA30A720F80086FC31 /* Release configuration for PBXNativeTarget "KurlyProjectTests" */,
-			);
-			defaultConfigurationName = Release;
-		};
-		88A8FEBB30A720F80086FC31 /* Build configuration list for PBXNativeTarget "KurlyProjectUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				88A8FEBC30A720F80086FC31 /* Debug configuration for PBXNativeTarget "KurlyProjectUITests" */,
-				88A8FEBD30A720F80086FC31 /* Release configuration for PBXNativeTarget "KurlyProjectUITests" */,
 			);
 			defaultConfigurationName = Release;
 		};
