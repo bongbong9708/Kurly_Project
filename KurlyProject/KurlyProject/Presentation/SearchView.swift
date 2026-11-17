@@ -107,8 +107,10 @@ struct SearchView: View {
                             Button {
                                 viewModel.delete(keyword: recentSearch.keyword)
                             } label: {
-                                Image(systemName: "xmark")
-                                    .foregroundStyle(.secondary)
+                                // 연회색 원 안의 회색 x. 버튼 안에서 `.secondary`는 강조색으로 바뀌므로 `Color`로 직접 지정한다
+                                Image(systemName: "xmark.circle.fill")
+                                    .symbolRenderingMode(.palette)
+                                    .foregroundStyle(Color.secondary, Color(.systemGray5))
                             }
                             // List 행 안의 버튼은 기본적으로 행 전체 탭에 반응한다.
                             // 행 탭은 #7에서 검색에 쓰므로 버튼 영역만 반응하게 한다
