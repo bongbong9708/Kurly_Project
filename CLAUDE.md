@@ -194,9 +194,17 @@ AI 활용 내용(프롬프트)은 제출물이다. 기능 하나가 끝날 때�
   - 중복이면 추가가 아니라 갱신이므로 삭제가 일어나지 않는다
 - 정렬 기준 날짜는 마지막 검색 시각 (중복 시 갱신되는 값) — 이유: <!-- TODO: 직접 작성 -->
 - 자동완성은 포함(contains) 매칭, 대소문자 무시. 모수가 10개라 결과도 최대 10개 — 이유: <!-- TODO: 직접 작성 -->
+- 중복이면 새로 입력한 표기로 바꾼다 (`Swift` 저장 후 `swift` 검색 → `swift`) — 이유: <!-- TODO: 직접 작성 -->
+- 정책(중복·정렬·10개 제한·삭제)은 `RecentSearchUseCase` 하나에 둔다. 저장 시 정렬해서 저장하고 `fetch()`는 그대로 돌려준다 — 이유: <!-- TODO: 직접 작성 -->
+- 개별 삭제는 저장된 표기 그대로(대소문자 구분) `keyword`로 찾는다 — 이유: <!-- TODO: 직접 작성 -->
+- 전체 삭제는 확인 창 없이 바로 지운다 — 이유: <!-- TODO: 직접 작성 -->
 
 ### 화면 전환
 - 검색 결과는 같은 화면에서 상태 전환으로 보여준다. 저장소 선택 시에만 WebView로 push — 이유: <!-- TODO: 직접 작성 -->
+- 검색바는 `NavigationStack` + `.searchable`을 쓴다 — 이유: <!-- TODO: 직접 작성 -->
+- 화면 상태는 `enum State`(idle / loading / loaded / failed)로 둔다 — 이유: <!-- TODO: 직접 작성 -->
+- 입력이 비어 있으면 검색 상태와 상관없이 최근 검색어를 보여준다
+- 최근 검색어를 고르면 검색바를 활성화해 "취소" 버튼을 보여준다. 함께 올라오는 키보드는 그대로 둔다 — 이유: <!-- TODO: 직접 작성 -->
 
 ### 검색 결과
 - 총 개수는 API `total_count`를 그대로 표시한다 — 이유: <!-- TODO: 직접 작성 -->
@@ -206,6 +214,7 @@ AI 활용 내용(프롬프트)은 제출물이다. 기능 하나가 끝날 때�
 - 자동완성은 입력할 때마다 즉시 갱신. 실제 검색(API 호출)은 키보드 search를 눌렀을 때만 — 이유: <!-- TODO: 직접 작성 -->
   - 결과: 입력 중에는 네트워크 요청이 없다. debounce가 필요 없다
 - 최근 검색어는 검색을 실행한 순간에 저장한다 — 이유: <!-- TODO: 직접 작성 -->
+  - 검색이 실패해도 저장한다
 - 검색어 앞뒤 공백은 trim 후 저장·비교한다 — 이유: <!-- TODO: 직접 작성 -->
 
 ### 이름 규칙
@@ -219,6 +228,12 @@ AI 활용 내용(프롬프트)은 제출물이다. 기능 하나가 끝날 때�
 - 최근 검색어는 UserDefaults + Codable로 저장한다 — 이유: <!-- TODO: 직접 작성 -->
   - Repository 프로토콜을 Domain에 두므로 저장 방식은 교체 가능하다
   - 기본 요구사항과 추가 구현을 모두 끝내고 시간이 남으면 SwiftData 구현으로도 만들어본다 (선택)
+- `RecentSearchRepository`는 목록 전체를 읽고 쓰는 `fetch()` / `save(_:)`만 둔다. 동기 API — 이유: <!-- TODO: 직접 작성 -->
+- 저장 형식은 `RecentSearchDTO`로 Entity와 분리한다 — 이유: <!-- TODO: 직접 작성 -->
+- 저장된 데이터를 디코딩하지 못하면 빈 목록으로 시작한다 — 이유: <!-- TODO: 직접 작성 -->
+
+### 동시성
+- `SearchViewModel`에 `nonisolated deinit {}`을 둔다 (iOS 18에서 해제 시 크래시 회피, "알려진 함정" 참고) — 이유: <!-- TODO: 직접 작성 -->
 
 ### 에러 처리
 - 첫 검색 실패(보여줄 결과가 없음)는 별도 에러 화면으로 보여준다 — 이유: <!-- TODO: 직접 작성 -->
@@ -232,13 +247,14 @@ KurlyProject/
 ├── KurlyProject/
 │   ├── Domain/
 │   │   ├── Entity/        GitHubRepository, RecentSearch, SearchResult
-│   │   ├── Repository/    SearchResultRepository (프로토콜)
+│   │   ├── Repository/    SearchResultRepository, RecentSearchRepository (프로토콜)
+│   │   ├── UseCase/       RecentSearchUseCase (중복 갱신·정렬·10개 제한·삭제)
 │   │   └── SearchError.swift
 │   ├── Data/
-│   │   ├── DTO/           SearchResultDTO (+ toDomain)
+│   │   ├── DTO/           SearchResultDTO, RecentSearchDTO (+ 변환)
 │   │   ├── Network/       HTTPClient, GitHubSearchAPIClient
-│   │   └── Repository/    DefaultSearchResultRepository
-│   ├── Presentation/      ContentView
+│   │   └── Repository/    DefaultSearchResultRepository, UserDefaultsRecentSearchRepository
+│   ├── Presentation/      SearchView, SearchViewModel
 │   └── KurlyProjectApp.swift
 ├── KurlyProjectTests/
 │   └── Resources/         search_repositories_swift.json (실제 응답 기반 픽스처)
@@ -251,7 +267,7 @@ docs/
     └── raw/          # 원본 대화 export
 ```
 
-아직 없는 것: UseCase, ViewModel, 최근 검색어 저장소, 검색 화면 UI, WebView (Day 2~3)
+아직 없는 것: 검색 결과 행 UI(썸네일·이름·소유자), 총 개수 표시, WebView, 에러 화면 (Day 3) / 자동완성, 페이지네이션 (Day 4)
 
 ## Git 규칙
 
@@ -280,12 +296,13 @@ xcodebuild -project KurlyProject/KurlyProject.xcodeproj -scheme KurlyProject -de
 <!-- 이슈로 만들지 않고 미룬 것. 처리하면 지운다. -->
 | 항목 | 내용 | 처리 예정 |
 |---|---|---|
-| `+` 인코딩 | `URLQueryItem`이 쿼리의 `+`를 인코딩하지 않아 `c++` 검색이 `c  `로 나갈 수 있다 | #2 |
 | 403/429 구분 | 403이 Rate limit 전용이 아니다. `x-ratelimit-remaining` 헤더로 정확히 판별 가능 | 미정 |
 | 한글 테스트명 | 통일 여부. 테스트가 적을 때 바꾸는 편이 싸다 | 미정 |
-| 템플릿 잔여물 | `KurlyProjectTests.swift`의 빈 테스트 2개, `ContentView`의 "Hello, world!" | #2 |
 | UI 테스트 타깃 | 시뮬레이터 실행 거부로 `-only-testing:KurlyProjectTests`로만 돌리는 중. 원인 미확인 | 미정 |
-| 실제 네트워크 호출 | API Client를 실제 서버로 호출해본 적 없다. 테스트는 전부 Mock | #2 |
+| `x` 아이콘 색 | 최근 검색어 삭제 버튼이 회색이 아니라 강조색으로 보인다. 버튼 안에서 `.secondary`가 강조색 계열로 해석됨 → `Color.secondary` | 미정 |
+| 검색바 자동 대문자 | 첫 글자가 자동으로 대문자가 되어 `kotlin`이 `Kotlin`으로 저장된다 | 미정 |
+| "Cancel" 표기 | 검색바 버튼이 "취소"가 아니라 "Cancel"로 나온다. Development Region이 영어인 것으로 추정 (미확인) | 미정 |
+| 기본 액터 격리 | 빌드 설정 `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`, `SWIFT_APPROACHABLE_CONCURRENCY = YES` (Xcode 기본값). Repository·UseCase도 메인 액터에 묶여 디코딩이 메인 스레드에서 돌 가능성이 있다. 위 "Swift 언어 모드" 결정의 전제와 다름 | 미정 |
 
 ## 알려진 함정
 
@@ -294,6 +311,11 @@ xcodebuild -project KurlyProject/KurlyProject.xcodeproj -scheme KurlyProject -de
 | GitHub Search API | 인증 없는 요청은 Rate limit이 매우 낮다(분당 10회 수준). 403/429 응답 처리 필요 |
 | 페이지네이션 | 로딩 중 중복 호출, 새 검색어 입력 시 이전 요청 결과가 섞이는 문제 |
 | 이미지 | `AsyncImage`는 캐시가 약해 스크롤 시 썸네일이 다시 로드될 수 있다 |
+| `@MainActor` 클래스 해제 | 기본 액터 격리 설정에서 deinit을 메인 액터로 옮기는 호환 코드가 iOS 18.6에서 SIGABRT (iOS 27.1은 정상). 새 클래스를 만들면 `nonisolated deinit {}`을 둔다 |
+| 테스트가 끝나지 않음 | 테스트 프로세스가 크래시하면 xcodebuild가 진단 수집에서 오래 멈춘다. `-test-timeouts-enabled YES -default-test-execution-time-allowance 30`으로 원인 테스트를 좁힌다 |
+| List 행 안의 버튼 | 기본 스타일 버튼은 행 전체 탭에 반응한다. 한 행에 버튼이 둘이면 보조 버튼에 `.buttonStyle(.borderless)` |
+| 버튼 안 글자색 | 버튼 안에서 `.primary`/`.secondary`는 강조색을 가리킨다. 일반 색은 `Color.primary`/`Color.secondary` |
+| searchable 포커스 | iOS 17에는 검색바 포커스를 조절하는 API가 없다(`.searchFocused`는 iOS 18+). `isPresented = true`로 활성화하면 키보드가 올라온다 |
 
 ## 하지 말 것
 
