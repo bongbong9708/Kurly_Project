@@ -226,6 +226,26 @@ final class SearchViewModelTests: XCTestCase {
         XCTAssertEqual(sut.state, .loaded(result))
     }
 
+    func test_다시_시도는_검색바를_고쳤어도_실패한_검색어로_요청한다() async {
+        // 검색어를 고친 뒤 검색하지 않고 키보드만 내리면 에러 화면이 남은 채 검색바 글자만 달라진다.
+        // 다음 페이지와 같이, 화면에 보이는 결과(에러)의 검색어로 다시 요청해야 한다
+        var shouldFail = true
+        repository.handler = { _, _ in
+            if shouldFail { throw SearchError.network }
+            return self.makeResult(totalCount: 1)
+        }
+        sut.query = "swift"
+        sut.search()
+        await sut.searchTask?.value
+
+        sut.query = "swif"
+        shouldFail = false
+        sut.retry()
+        await sut.searchTask?.value
+
+        XCTAssertEqual(repository.receivedKeywords, ["swift", "swift"])
+    }
+
     func test_다시_시도는_최근_검색어를_다시_저장하지_않는다() async {
         repository.handler = { _, _ in throw SearchError.network }
         sut.query = "swift"

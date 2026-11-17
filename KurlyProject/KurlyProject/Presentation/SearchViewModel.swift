@@ -62,7 +62,7 @@ final class SearchViewModel {
     /// 진행 중인 다음 페이지 요청. 새 검색 시 취소하려고 들고 있는다. 테스트가 기다릴 수 있도록 읽기는 열어 둔다
     private(set) var nextPageTask: Task<Void, Never>?
 
-    /// 지금 보여주는 결과의 검색어. 검색 후 검색바를 고쳐도 다음 페이지는 이 검색어로 요청해야 해서 따로 둔다
+    /// 지금 보여주는 결과(또는 에러)의 검색어. 검색 후 검색바를 고쳐도 다시 시도·다음 페이지는 이 검색어로 요청해야 해서 따로 둔다
     private var currentKeyword: String?
     private var currentPage = 1
     /// 중복을 빼기 전, 서버에서 받은 항목 수. 1,000개 제한과 비교하는 데 쓴다
@@ -122,11 +122,10 @@ final class SearchViewModel {
     /// 실패한 검색을 같은 검색어로 다시 요청한다.
     ///
     /// 사용자가 새로 검색한 것이 아니므로 최근 검색어를 다시 저장하지 않는다.
-    /// 검색바에 있는 검색어로 요청한다. 검색어를 고친 뒤 검색하지 않고 키보드만 내리면
-    /// 실패한 검색어와 다를 수 있다 (그때는 고친 검색어로 요청한다).
+    /// 검색바 글자가 아니라 검색했던 검색어(`currentKeyword`)로 요청한다. 검색어를 고친 뒤 키보드만 내리면
+    /// 검색바 글자가 달라질 수 있는데, 화면의 에러는 검색했던 검색어의 것이기 때문이다 (다음 페이지와 같은 기준)
     func retry() {
-        let keyword = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !keyword.isEmpty else { return }
+        guard let keyword = currentKeyword else { return }
         load(keyword: keyword)
     }
 
