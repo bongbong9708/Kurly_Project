@@ -26,8 +26,13 @@ struct UserDefaultsRecentSearchRepository: RecentSearchRepository {
 
     func save(_ searches: [RecentSearch]) {
         // String과 Date만 담긴 배열이라 인코딩은 실패하지 않는다.
-        // 실패한다면 코드가 잘못된 것이라 크래시로 드러내는 편이 낫다
-        let data = try! JSONEncoder().encode(searches.map(RecentSearchDTO.init))
-        userDefaults.set(data, forKey: Self.storageKey)
+        // 실패한다면 코드가 잘못된 것이라 디버그 빌드에서는 멈춰서 드러내고,
+        // 릴리스 빌드에서는 최근 검색어 저장 하나 때문에 앱을 죽이지 않도록 저장만 건너뛴다
+        do {
+            let data = try JSONEncoder().encode(searches.map(RecentSearchDTO.init))
+            userDefaults.set(data, forKey: Self.storageKey)
+        } catch {
+            assertionFailure("최근 검색어 인코딩 실패: \(error)")
+        }
     }
 }
