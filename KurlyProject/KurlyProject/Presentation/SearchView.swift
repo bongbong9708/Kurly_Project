@@ -165,7 +165,15 @@ struct SearchView: View {
                         NavigationLink(value: repository) {
                             RepositoryRow(repository: repository)
                         }
+                        // 끝에 가까운 행이 보이면 다음 페이지를 미리 요청한다 (판단은 ViewModel)
+                        .onAppear {
+                            viewModel.loadNextPageIfNeeded(currentItem: repository)
+                        }
                     }
+                    nextPageFooter
+                        // List가 이 행을 재사용하면 ProgressView가 두 번째부터 돌지 않아 빈 행으로 보였다.
+                        // 받은 개수가 바뀔 때마다 다른 행으로 만들어 매번 새로 그리게 한다
+                        .id(result.repositories.count)
                 } header: {
                     // API의 total_count를 그대로 쓴다. 실제로 받을 수 있는 개수(최대 1,000)와는 다르다
                     Text("\(result.totalCount.formatted())개 저장소")
@@ -180,6 +188,32 @@ struct SearchView: View {
                 Button("다시 시도") {
                     viewModel.retry()
                 }
+            }
+        }
+    }
+}
+
+private extension SearchView {
+
+    /// 목록 맨 아래: 다음 페이지를 불러오는 중이면 로딩 표시, 실패하면 이미 받은 결과 아래에 안내와 다시 시도 버튼
+    @ViewBuilder
+    var nextPageFooter: some View {
+        switch viewModel.nextPageState {
+        case .idle:
+            EmptyView()
+        case .loading:
+            ProgressView()
+                .frame(maxWidth: .infinity)
+        case .failed(let error):
+            HStack {
+                Text(error.title)
+                    .font(.footnote)
+                    .foregroundStyle(Color.secondary)
+                Spacer()
+                Button("다시 시도") {
+                    viewModel.retryNextPage()
+                }
+                .buttonStyle(.borderless)
             }
         }
     }
