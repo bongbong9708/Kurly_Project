@@ -24,7 +24,16 @@ final class SearchViewModel {
         case failed(SearchError)
     }
 
-    var query = ""
+    var query = "" {
+        didSet {
+            // 검색바의 "취소"(또는 지우기 버튼)로 검색어가 비면 검색 전 상태로 돌아간다.
+            // 진행 중인 요청도 취소해 늦게 온 결과가 idle을 덮어쓰지 않게 한다
+            if query.isEmpty && !oldValue.isEmpty {
+                searchTask?.cancel()
+                state = .idle
+            }
+        }
+    }
     private(set) var state: State = .idle
 
     /// 진행 중인 검색. 재검색 시 취소하려고 들고 있는다.
@@ -33,8 +42,10 @@ final class SearchViewModel {
 
     private(set) var recentSearches: [RecentSearch]
 
-    /// 마지막으로 요청한 검색어. 다시 시도할 때 쓴다
-    private var lastKeyword: String?
+    /// 입력을 포함하는 최근 검색어 (자동완성)
+    var suggestions: [RecentSearch] {
+        recentSearchUseCase.suggestions(for: query, in: recentSearches)
+    }
 
     private let repository: SearchResultRepository
     private let recentSearchUseCase: RecentSearchUseCase
@@ -82,14 +93,15 @@ final class SearchViewModel {
     /// 실패한 검색을 같은 검색어로 다시 요청한다.
     ///
     /// 사용자가 새로 검색한 것이 아니므로 최근 검색어를 다시 저장하지 않는다.
-    /// 실패 후 검색바의 글자를 고쳤더라도 실패한 검색어로 요청한다. 화면이 보여주는 에러가 그 검색어의 것이기 때문이다.
+    /// 검색바에 있는 검색어로 요청한다. 검색어를 고친 뒤 검색하지 않고 키보드만 내리면
+    /// 실패한 검색어와 다를 수 있다 (그때는 고친 검색어로 요청한다).
     func retry() {
-        guard let lastKeyword else { return }
-        load(keyword: lastKeyword)
+        let keyword = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !keyword.isEmpty else { return }
+        load(keyword: keyword)
     }
 
     private func load(keyword: String) {
-        lastKeyword = keyword
         searchTask?.cancel()
         state = .loading
 

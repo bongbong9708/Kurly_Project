@@ -7,7 +7,7 @@ import Foundation
 
 /// 에러 화면에 보여줄 안내.
 ///
-/// 화면 문구라서 Domain의 `SearchError`가 아니라 Presentation에 둔다.
+/// 화면 문구라서 Domain의 `SearchError` 본체에 넣지 않고 확장으로 따로 둔다.
 /// 사용자가 할 수 있는 대응이 다른 경우만 문구를 나눈다.
 extension SearchError {
 

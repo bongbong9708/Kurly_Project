@@ -48,4 +48,13 @@ struct RecentSearchUseCase {
     func deleteAll() {
         repository.save([])
     }
+
+    /// 입력을 포함하는 최근 검색어. 대소문자는 무시하고 받은 순서(최신순)를 유지한다.
+    ///
+    /// 글자를 칠 때마다 불리므로 저장소를 다시 읽지 않고, 화면이 이미 들고 있는 목록을 받아서 거른다.
+    /// 중복 판정과 같은 기준을 쓰려고 로케일 영향이 없는 `.caseInsensitive`로 비교한다.
+    func suggestions(for query: String, in searches: [RecentSearch]) -> [RecentSearch] {
+        let keyword = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        return searches.filter { $0.keyword.range(of: keyword, options: .caseInsensitive) != nil }
+    }
 }
