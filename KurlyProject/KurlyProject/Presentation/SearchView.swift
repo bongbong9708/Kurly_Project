@@ -82,7 +82,7 @@ struct SearchView: View {
         }
     }
 
-    // 상태별 화면은 최소한으로만 둔다. 결과 행은 #8~#10, 에러 화면은 #12에서 만든다
+    // 에러 화면은 #12에서 만든다
     @ViewBuilder
     private var searchResultContent: some View {
         switch viewModel.state {
@@ -91,11 +91,45 @@ struct SearchView: View {
         case .loading:
             ProgressView()
         case .loaded(let result):
-            List(result.repositories) { repository in
-                Text(repository.name)
+            List {
+                Section {
+                    ForEach(result.repositories) { repository in
+                        RepositoryRow(repository: repository)
+                    }
+                } header: {
+                    // API의 total_count를 그대로 쓴다. 실제로 받을 수 있는 개수(최대 1,000)와는 다르다
+                    Text("\(result.totalCount.formatted())개 저장소")
+                }
             }
         case .failed:
             Text("검색에 실패했습니다")
+        }
+    }
+}
+
+/// 검색 결과 한 행: 원형 썸네일 + 저장소 이름 + 소유자
+private struct RepositoryRow: View {
+
+    let repository: GitHubRepository
+
+    var body: some View {
+        HStack(spacing: 12) {
+            // 캐시가 약해 스크롤 시 다시 받을 수 있다. 측정 전까지는 기본 동작을 쓴다
+            AsyncImage(url: repository.ownerAvatarURL) { image in
+                image.resizable().scaledToFill()
+            } placeholder: {
+                Color.secondary.opacity(0.2)
+            }
+            .frame(width: 40, height: 40)
+            .clipShape(Circle())
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(repository.name)
+                    .font(.headline)
+                Text(repository.ownerLogin)
+                    .font(.subheadline)
+                    .foregroundStyle(Color.secondary)
+            }
         }
     }
 }
