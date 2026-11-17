@@ -20,6 +20,10 @@ struct SearchView: View {
         // `.searchable`은 NavigationStack 안에서 큰 타이틀 아래 검색바와 "취소" 버튼을 기본으로 그린다
         NavigationStack {
             content
+                // List 같은 lazy 컨테이너 안에 두면 동작하지 않아 List 바깥에 붙인다
+                .navigationDestination(for: GitHubRepository.self) { repository in
+                    SearchDetailWebView(repository: repository)
+                }
                 .navigationTitle("Search")
                 .searchable(text: $viewModel.query, isPresented: $isSearchPresented, prompt: "저장소 검색")
                 // 입력 중에는 호출하지 않고, 키보드 search를 눌렀을 때만 검색한다
@@ -94,7 +98,9 @@ struct SearchView: View {
             List {
                 Section {
                     ForEach(result.repositories) { repository in
-                        RepositoryRow(repository: repository)
+                        NavigationLink(value: repository) {
+                            RepositoryRow(repository: repository)
+                        }
                     }
                 } header: {
                     // API의 total_count를 그대로 쓴다. 실제로 받을 수 있는 개수(최대 1,000)와는 다르다
