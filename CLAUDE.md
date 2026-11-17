@@ -221,6 +221,8 @@ AI 활용 내용(프롬프트)은 제출물이다. 기능 하나가 끝날 때�
   - 앱 기본 언어가 영어이고 다른 지역화가 없어 시스템 문구가 항상 영어("Cancel")로 나왔다
   - 이 키는 `INFOPLIST_KEY_` 빌드 설정으로 넣을 수 없어, 동기화 폴더 밖에 별도 plist를 두고 `INFOPLIST_FILE`로 합친다
 - 최근 검색어 삭제 버튼은 연회색 원 안의 회색 x(`xmark.circle.fill`)로 둔다 — 이유: <!-- TODO: 직접 작성 -->
+- "전체삭제" 글자는 시스템 빨간색(`systemRed`)으로 둔다 — 이유: <!-- TODO: 직접 작성 -->
+- 앱 강조색(`AccentColor` 에셋)은 시스템 보라색(`systemPurple`)으로 둔다. 검색바 "취소"·커서·뒤로 버튼·"다시 시도"가 보라색이 된다 — 이유: <!-- TODO: 직접 작성 -->
 - 검색바 첫 글자 자동 대문자는 그대로 둔다 — 이유: <!-- TODO: 직접 작성 -->
   - 검색하지 않고 키보드만 내리면 고친 검색어 아래 이전 결과가 그대로 보인다. 그대로 둔다
 
@@ -328,7 +330,6 @@ xcodebuild -project KurlyProject/KurlyProject.xcodeproj -scheme KurlyProject -de
 | UI 테스트 타깃 | 시뮬레이터 실행 거부로 `-only-testing:KurlyProjectTests`로만 돌리는 중. 원인 미확인 | 미정 |
 | 하드웨어 키보드 | 키보드 표시 알림이 오지 않으면 입력 중 판단이 안 될 수 있다. 미확인 | 미정 |
 | 다음 페이지 실패 화면 | 요청 한도 초과를 재현하지 못해 화면으로 확인하지 못했다 | 미정 |
-| AI 기록 결과 칸 | `docs/ai/logs` 10~12의 "결과" 칸(PR·커밋)이 비어 있다. `docs/ai/README.md` 단계별 표도 02까지만 있다 | 미정 |
 | 기본 액터 격리 | 빌드 설정 `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`, `SWIFT_APPROACHABLE_CONCURRENCY = YES` (Xcode 기본값). Repository·UseCase도 메인 액터에 묶여 디코딩이 메인 스레드에서 돌 가능성이 있다. 위 "Swift 언어 모드" 결정의 전제와 다름 | 미정 |
 
 ## 알려진 함정
