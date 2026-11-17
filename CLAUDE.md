@@ -182,6 +182,7 @@ AI 활용 내용(프롬프트)은 제출물이다. 기능 하나가 끝날 때�
 - 레이어: Presentation(View + ViewModel) → Domain(Entity, Repository 프로토콜, UseCase) ← Data(Repository 구현, API Client, DTO, 로컬 저장소)
 - UseCase는 도메인 로직이 있는 곳에만 둔다. 단순 위임이면 ViewModel이 Repository를 직접 호출 — 이유: <!-- TODO: 직접 작성 -->
   - UseCase 후보: 최근 검색어 저장(중복·10개 제한·정렬), 자동완성 필터링, 페이지네이션(다음 페이지 판단)
+  - 실제 배치: 최근 검색어 저장·자동완성 필터링은 `RecentSearchUseCase`, 페이지네이션 판단은 `SearchViewModel` — 이유: <!-- TODO: 직접 작성 -->
 - 최소 지원 iOS 17.0 (참고: 2026-11-13 App Store 기준 컬리·카카오톡 앱 모두 iOS 17.0 이상) — 이유: <!-- TODO: 직접 작성 -->
   - 결과: `@Observable` 사용 가능, SwiftUI 네이티브 `WebView`(iOS 26+)는 사용 불가 → `WKWebView`를 `UIViewRepresentable`로 감싼다
 - 같은 검색어 재검색 시 새로 저장하지 않고 기존 항목의 날짜를 갱신한다 (중복 제거) — 이유: <!-- TODO: 직접 작성 -->
@@ -198,17 +199,44 @@ AI 활용 내용(프롬프트)은 제출물이다. 기능 하나가 끝날 때�
 - 정책(중복·정렬·10개 제한·삭제)은 `RecentSearchUseCase` 하나에 둔다. 저장 시 정렬해서 저장하고 `fetch()`는 그대로 돌려준다 — 이유: <!-- TODO: 직접 작성 -->
 - 개별 삭제는 저장된 표기 그대로(대소문자 구분) `keyword`로 찾는다 — 이유: <!-- TODO: 직접 작성 -->
 - 전체 삭제는 확인 창 없이 바로 지운다 — 이유: <!-- TODO: 직접 작성 -->
+- 자동완성 필터는 `RecentSearchUseCase.suggestions(for:in:)`. 저장소를 다시 읽지 않고 ViewModel이 들고 있는 목록을 넘겨받아 거른다 — 이유: <!-- TODO: 직접 작성 -->
+- 자동완성 날짜는 `yy. MM. dd.` 형식으로 고정한다 (앱 언어와 무관) — 이유: <!-- TODO: 직접 작성 -->
+- 자동완성 행에는 x 삭제·"최근 검색" 제목·전체삭제를 두지 않는다 — 이유: <!-- TODO: 직접 작성 -->
+- 최근 검색어 목록과 자동완성은 같은 목록 하나에서 `query.isEmpty`로 분기한다 — 이유: <!-- TODO: 직접 작성 -->
+- 빈 화면 대신 안내 화면을 보여준다: 최근 검색어가 없으면 "최근 검색어 없음", 자동완성에 일치 항목이 없으면 "일치하는 최근 검색어 없음" — 이유: <!-- TODO: 직접 작성 -->
 
 ### 화면 전환
 - 검색 결과는 같은 화면에서 상태 전환으로 보여준다. 저장소 선택 시에만 WebView로 push — 이유: <!-- TODO: 직접 작성 -->
 - 검색바는 `NavigationStack` + `.searchable`을 쓴다 — 이유: <!-- TODO: 직접 작성 -->
 - 화면 상태는 `enum State`(idle / loading / loaded / failed)로 둔다 — 이유: <!-- TODO: 직접 작성 -->
-- 입력이 비어 있으면 검색 상태와 상관없이 최근 검색어를 보여준다
-- 최근 검색어를 고르면 검색바를 활성화해 "취소" 버튼을 보여준다. 함께 올라오는 키보드는 그대로 둔다 — 이유: <!-- TODO: 직접 작성 -->
+  - 다음 페이지 상태는 `enum NextPageState`(idle / loading / failed)로 따로 둔다
+- 최근 검색어·자동완성 목록은 `state == .idle`이거나 입력 중일 때 보여준다. 그 외에는 검색 상태별 화면 — 이유: <!-- TODO: 직접 작성 -->
+- 검색어가 비면("취소" 또는 지우기 버튼) ViewModel이 진행 중인 요청을 취소하고 `idle`로 돌아간다 — 이유: <!-- TODO: 직접 작성 -->
+- 입력 중은 키보드 표시 알림(`keyboardWillShow`/`keyboardWillHide`)으로 판단해 View의 `@State isEditing`에 둔다 — 이유: <!-- TODO: 직접 작성 -->
+  - iOS 17에는 `.searchable` 포커스 API(`.searchFocused`, iOS 18+)가 없다
+  - `isSearchPresented`로 판단하는 방식은 검색바를 닫으면 표시가 비워져 버렸다 ("알려진 함정" 참고)
+- 최근 검색어·자동완성을 고르면 키보드를 내리고(`UIApplication.endEditing()`) 검색한다. 이때 "취소" 버튼은 보이지 않는다 — 이유: <!-- TODO: 직접 작성 -->
+- 스크롤하거나 안내 화면의 빈 곳을 누르면 키보드를 내린다 — 이유: <!-- TODO: 직접 작성 -->
+- 검색바 "취소" 같은 시스템 문구는 기기 설정 언어를 따른다 (`KurlyProject-Info.plist`의 `CFBundleAllowMixedLocalizations`) — 이유: <!-- TODO: 직접 작성 -->
+  - 앱 기본 언어가 영어이고 다른 지역화가 없어 시스템 문구가 항상 영어("Cancel")로 나왔다
+  - 이 키는 `INFOPLIST_KEY_` 빌드 설정으로 넣을 수 없어, 동기화 폴더 밖에 별도 plist를 두고 `INFOPLIST_FILE`로 합친다
+- 최근 검색어 삭제 버튼은 연회색 원 안의 회색 x(`xmark.circle.fill`)로 둔다 — 이유: <!-- TODO: 직접 작성 -->
+- "전체삭제" 글자는 시스템 빨간색(`systemRed`)으로 둔다 — 이유: <!-- TODO: 직접 작성 -->
+- 앱 강조색(`AccentColor` 에셋)은 시스템 보라색(`systemPurple`)으로 둔다. 검색바 "취소"·커서·뒤로 버튼·"다시 시도"가 보라색이 된다 — 이유: <!-- TODO: 직접 작성 -->
+- 검색바 첫 글자 자동 대문자는 그대로 둔다 — 이유: <!-- TODO: 직접 작성 -->
+  - 검색하지 않고 키보드만 내리면 고친 검색어 아래 이전 결과가 그대로 보인다. 그대로 둔다
 
 ### 검색 결과
 - 총 개수는 API `total_count`를 그대로 표시한다 — 이유: <!-- TODO: 직접 작성 -->
 - `per_page`는 API 기본값 30을 쓴다 (요청에 명시하지 않음) — 이유: <!-- TODO: 직접 작성 -->
+
+### 페이지네이션
+- 끝에서 5번째 행이 화면에 나타나면(`onAppear`) 다음 페이지를 미리 요청한다 — 이유: <!-- TODO: 직접 작성 -->
+- 받은 개수가 `min(total_count, 1000)`에 닿거나 빈 페이지를 받으면 더 요청하지 않는다 (GitHub 검색은 1,000개 이후 422) — 이유: <!-- TODO: 직접 작성 -->
+- 로딩 중·실패 중에는 추가 요청하지 않는다. 실패 후 다시 요청은 하단 "다시 시도"로만 한다 — 이유: <!-- TODO: 직접 작성 -->
+- 이어 붙일 때 이미 받은 `id`는 뺀다 — 이유: <!-- TODO: 직접 작성 -->
+- 다음 페이지는 검색바 글자가 아니라 검색했던 검색어(`currentKeyword`)로 요청한다 — 이유: <!-- TODO: 직접 작성 -->
+- 새 검색·검색어 비우기 시 진행 중인 다음 페이지 요청을 취소한다 — 이유: <!-- TODO: 직접 작성 -->
 
 ### 입력 처리
 - 자동완성은 입력할 때마다 즉시 갱신. 실제 검색(API 호출)은 키보드 search를 눌렀을 때만 — 이유: <!-- TODO: 직접 작성 -->
@@ -238,6 +266,10 @@ AI 활용 내용(프롬프트)은 제출물이다. 기능 하나가 끝날 때�
 ### 에러 처리
 - 첫 검색 실패(보여줄 결과가 없음)는 별도 에러 화면으로 보여준다 — 이유: <!-- TODO: 직접 작성 -->
 - 다음 페이지 로딩 실패는 목록 하단에 인라인으로 보여준다. 이미 받은 결과는 유지 — 이유: <!-- TODO: 직접 작성 -->
+- 403은 `x-ratelimit-remaining: 0` 또는 `retry-after`가 있을 때만 `rateLimited`, 그 외 403은 `unexpectedStatus(403)`. 429는 `rateLimited` — 이유: <!-- TODO: 직접 작성 -->
+- 에러 문구는 사용자가 할 수 있는 대응이 다른 경우만 나눈다 (네트워크 / 요청 한도 초과 / 그 외) — 이유: <!-- TODO: 직접 작성 -->
+- "다시 시도"는 최근 검색어를 다시 저장하지 않고, 검색바의 검색어로 다시 요청한다 — 이유: <!-- TODO: 직접 작성 -->
+- WebView는 첫 로드 실패만 에러 화면으로 바꾼다. 링크를 연달아 눌러 생기는 취소(-999)는 무시 — 이유: <!-- TODO: 직접 작성 -->
 - 
 
 ## 폴더 구조
@@ -248,13 +280,14 @@ KurlyProject/
 │   ├── Domain/
 │   │   ├── Entity/        GitHubRepository, RecentSearch, SearchResult
 │   │   ├── Repository/    SearchResultRepository, RecentSearchRepository (프로토콜)
-│   │   ├── UseCase/       RecentSearchUseCase (중복 갱신·정렬·10개 제한·삭제)
+│   │   ├── UseCase/       RecentSearchUseCase (중복 갱신·정렬·10개 제한·삭제·자동완성 필터)
 │   │   └── SearchError.swift
 │   ├── Data/
 │   │   ├── DTO/           SearchResultDTO, RecentSearchDTO (+ 변환)
 │   │   ├── Network/       HTTPClient, GitHubSearchAPIClient
 │   │   └── Repository/    DefaultSearchResultRepository, UserDefaultsRecentSearchRepository
-│   ├── Presentation/      SearchView, SearchViewModel
+│   ├── Presentation/      SearchView, SearchViewModel, SearchDetailWebView
+│   ├── Util/              SearchError+Message (화면 문구), UIApplication+EndEditing (키보드 내리기)
 │   └── KurlyProjectApp.swift
 ├── KurlyProjectTests/
 │   └── Resources/         search_repositories_swift.json (실제 응답 기반 픽스처)
@@ -263,11 +296,8 @@ KurlyProject/
 docs/
 └── ai/
     ├── README.md     # AI 활용 요약 (도구, 원칙, 단계별 요약, AI가 틀린 사례, 회고)
-    ├── logs/         # 기능별 기록 (이슈 번호와 맞춤)
-    └── raw/          # 원본 대화 export
+    └── logs/         # 기능별 기록 (이슈 번호와 맞춤)
 ```
-
-아직 없는 것: 검색 결과 행 UI(썸네일·이름·소유자), 총 개수 표시, WebView, 에러 화면 (Day 3) / 자동완성, 페이지네이션 (Day 4)
 
 ## Git 규칙
 
@@ -296,12 +326,10 @@ xcodebuild -project KurlyProject/KurlyProject.xcodeproj -scheme KurlyProject -de
 <!-- 이슈로 만들지 않고 미룬 것. 처리하면 지운다. -->
 | 항목 | 내용 | 처리 예정 |
 |---|---|---|
-| 403/429 구분 | 403이 Rate limit 전용이 아니다. `x-ratelimit-remaining` 헤더로 정확히 판별 가능 | 미정 |
 | 한글 테스트명 | 통일 여부. 테스트가 적을 때 바꾸는 편이 싸다 | 미정 |
 | UI 테스트 타깃 | 시뮬레이터 실행 거부로 `-only-testing:KurlyProjectTests`로만 돌리는 중. 원인 미확인 | 미정 |
-| `x` 아이콘 색 | 최근 검색어 삭제 버튼이 회색이 아니라 강조색으로 보인다. 버튼 안에서 `.secondary`가 강조색 계열로 해석됨 → `Color.secondary` | 미정 |
-| 검색바 자동 대문자 | 첫 글자가 자동으로 대문자가 되어 `kotlin`이 `Kotlin`으로 저장된다 | 미정 |
-| "Cancel" 표기 | 검색바 버튼이 "취소"가 아니라 "Cancel"로 나온다. Development Region이 영어인 것으로 추정 (미확인) | 미정 |
+| 하드웨어 키보드 | 키보드 표시 알림이 오지 않으면 입력 중 판단이 안 될 수 있다. 미확인 | 미정 |
+| 다음 페이지 실패 화면 | 요청 한도 초과를 재현하지 못해 화면으로 확인하지 못했다 | 미정 |
 | 기본 액터 격리 | 빌드 설정 `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`, `SWIFT_APPROACHABLE_CONCURRENCY = YES` (Xcode 기본값). Repository·UseCase도 메인 액터에 묶여 디코딩이 메인 스레드에서 돌 가능성이 있다. 위 "Swift 언어 모드" 결정의 전제와 다름 | 미정 |
 
 ## 알려진 함정
@@ -316,6 +344,10 @@ xcodebuild -project KurlyProject/KurlyProject.xcodeproj -scheme KurlyProject -de
 | List 행 안의 버튼 | 기본 스타일 버튼은 행 전체 탭에 반응한다. 한 행에 버튼이 둘이면 보조 버튼에 `.buttonStyle(.borderless)` |
 | 버튼 안 글자색 | 버튼 안에서 `.primary`/`.secondary`는 강조색을 가리킨다. 일반 색은 `Color.primary`/`Color.secondary` |
 | searchable 포커스 | iOS 17에는 검색바 포커스를 조절하는 API가 없다(`.searchFocused`는 iOS 18+). `isPresented = true`로 활성화하면 키보드가 올라온다 |
+| searchable 닫기 | `isPresented = false`로 열려 있던 검색바를 닫으면 바인딩 값은 남는데 검색바 표시만 비워진다. 같은 값·다른 값을 다시 넣어도 복구되지 않았다 |
+| List 전체 탭 제스처 | `List`를 감싼 뷰에 `onTapGesture`/`simultaneousGesture`를 붙이면 행 버튼보다 먼저 반응해, 키보드가 내려가며 목록이 사라지고 행 탭이 무시된다 |
+| List 안 ProgressView | 같은 행이 재사용되면 두 번째부터 돌지 않아 빈 행으로 보인다. 바뀌는 값으로 `.id`를 줘서 새로 그리게 한다 |
+| 시뮬레이터 입력 | 앱 실행·부팅 직후 바로 탭·입력하면 무시될 수 있다. 몇 초 기다리거나 화면을 확인한 뒤 입력한다 |
 
 ## 하지 말 것
 
